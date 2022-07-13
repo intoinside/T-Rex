@@ -20,11 +20,11 @@ retroProject {
     libFromGitHub "c64lib/common", "0.3.0"
     libFromGitHub "c64lib/chipset", "0.3.0"
 }
-/*
+
 preprocess {
     // Game charset, colors and maps
     charpad {
-        getInput().set(file("./assets/map.ctm"))
+        getInput().set(file("./assets/t-rex-map.ctm"))
         getUseBuildDir().set(false)
         outputs {
             charset {
@@ -32,7 +32,7 @@ preprocess {
             }
             charsetAttributes {
                 nybbler {
-                    loOutput = file("./assets/charcolors.bin")
+                    loOutput = file("./assets/colors.bin")
                 }
             }
 
@@ -40,43 +40,10 @@ preprocess {
             map {
                 left = 0
                 top = 0
-                right = 40
+                right = 256
                 bottom = 25
                 interleaver {
-                    output = file("./assets/intromap.bin")
-                }
-                interleaver {
-                }
-            }
-            map {
-                left = 40
-                top = 0
-                right = 80
-                bottom = 25
-                interleaver {
-                    output = file("./assets/mainmap.bin")
-                }
-                interleaver {
-                }
-            }
-            map {
-                left = 80
-                top = 0
-                right = 94
-                bottom = 7
-                interleaver {
-                    output = file("./assets/dialog-level-completed.bin")
-                }
-                interleaver {
-                }
-            }
-            map {
-                left = 80
-                top = 7
-                right = 94
-                bottom = 14
-                interleaver {
-                    output = file("./assets/dialog-game-over.bin")
+                    output = file("./assets/map.bin")
                 }
                 interleaver {
                 }
@@ -84,4 +51,3 @@ preprocess {
         }
     }
 }
-*/
