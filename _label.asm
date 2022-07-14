@@ -1,9 +1,6 @@
 
 #importonce
 
-.segmentdef Code
-
-.segment Code
-
 #import "./_background.asm"
+#import "./chipset/lib/vic2.asm"
 
