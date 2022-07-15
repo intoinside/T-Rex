@@ -30,7 +30,7 @@ Entry: {
     sta $01             // RAM visible at $a000-$bfff and $e000-$ffff
                         // I/O area visible at $d000-$dfff
 
-    lda #%11101100
+    lda #%00001100
     sta c64lib.MEMORY_CONTROL           // Pointer to char memory $0800-$0fff
                         // Pointer to screen memory $0000-$03ff
 
@@ -45,7 +45,7 @@ Entry: {
     sta $fffe
     lda #>RasterLandscapeStart
     sta $ffff
-    lda #$20
+    lda #32
     sta c64lib.RASTER           // Raster line at $ff
 
     lda c64lib.CONTROL_1           // Screen control register #1
@@ -60,6 +60,8 @@ Entry: {
     sta c64lib.BG_COL_1
     lda #DARK_GREY
     sta c64lib.BG_COL_2
+
+    jsr DrawForeground
 
   !:
     lda c64lib.RASTER
@@ -87,7 +89,7 @@ RasterLandscapeStart: {
     sta $fffe
     lda #>RasterForegroundStart
     sta $ffff
-    lda #$90                        // Raster line $81 - 129
+    lda #144
     sta c64lib.RASTER
   ModA:
     lda #$00
@@ -124,52 +126,11 @@ RasterForegroundStart: {
     ora #%00010000
     sta c64lib.CONTROL_2
 
-    lda #<Split03a
-    sta $fffe
-    lda #>Split03a
-    sta $ffff
-    lda #$a6
-    sta c64lib.RASTER
-
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
-    asl c64lib.IRR
-    rti
-}
-
-* = * "Split03a"
-Split03a: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
-
-    //Foreground
-    lda c64lib.RASTER
-    cmp c64lib.RASTER
-    bne *-3
-
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-
     lda #<RasterLandscapeStart
     sta $fffe
     lda #>RasterLandscapeStart
     sta $ffff
-    lda #$20
+    lda #32
     sta c64lib.RASTER
 
   ModA:

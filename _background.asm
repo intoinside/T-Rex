@@ -136,44 +136,48 @@ Irq5: {
 
 * = * "ScrollLandscape"
 ScrollLandscape: {
-        lda Direction
-        beq !NoShift+
-        bpl !Forward+
+    lda Direction
+    beq !NoShift+
+    bpl !Forward+
 
-    !Backward:
-        //Increment map-position
-        lda MapPositionLandscape + 0
-        clc
-        adc MapSpeed + 1
-        sta MapPositionLandscape + 0
-        cmp #$08
-        bcc !NoShift+
+  !Backward:
+    //Increment map-position
+    lda MapPositionLandscape + 0
+    clc
+    adc MapSpeed + 1
+    sta MapPositionLandscape + 0
+    cmp #$08
+    bcc !NoShift+
 
-        //Shift map
-        sbc #$08
-        sta MapPositionLandscape + 0
-        dec MapPositionLandscape + 1
-        ldx MapPositionLandscape + 1
-        jsr ShiftMapLandscapeBack
-    !NoShift:
-        rts
+    //Shift map
+    sbc #$08
+    sta MapPositionLandscape + 0
+    dec MapPositionLandscape + 1
+    ldx MapPositionLandscape + 1
+    jsr ShiftMapLandscapeBack
+  !NoShift:
+    rts
 
-    !Forward:
-        //Increment map-position
-        lda MapPositionLandscape + 0
-        sec
-        sbc MapSpeed + 1
-        sta MapPositionLandscape + 0
-        bcs !NoShift+
-        //Shift map
-        adc #$08
-        sta MapPositionLandscape + 0
-        inc MapPositionLandscape + 1
-        ldx MapPositionLandscape + 1
-        jsr ShiftMapLandscape
-    !NoShift:
-        rts
+  !Forward:
+    //Increment map-position
+    lda MapPositionLandscape + 0
+    sec
+    sbc MapSpeed + 1
+    sta MapPositionLandscape + 0
+    bcs !NoShift+
+    //Shift map
+    adc #$08
+    sta MapPositionLandscape + 0
+    inc MapPositionLandscape + 1
+    ldx MapPositionLandscape + 1
+    jsr ShiftMapLandscape
+  !NoShift:
+    rts
 }
+
+.label ScreenPart1LowerRow = 3
+.label ScreenPart2LowerRow = 16
+.label ScreenPart3HigherRow = 20
 
 * = * "ShiftMapLandscape"
 ShiftMapLandscape: {
@@ -182,44 +186,57 @@ ShiftMapLandscape: {
     adc #$26
     tax
 
-    .for(var i=3; i< 16; i++) {
-        .for(var j=0; j<38; j++) {
-            lda SCREEN_RAM + $28 * i + j + 1
-            sta SCREEN_RAM + $28 * i + j + 0
-        }
-        lda MAP + $100 * i, x
-        sta SCREEN_RAM + $28 * i + $26
+    .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
+      .for (var j=0; j<38; j++) {
+        lda SCREEN_RAM + $28 * i + j + 1
+        sta SCREEN_RAM + $28 * i + j + 0
+      }
+      lda MAP + $100 * i, x
+      sta SCREEN_RAM + $28 * i + $26
     }
     rts
 }
 
 * = * "ShiftMapLandscapeBack"
 ShiftMapLandscapeBack: {
-        .for(var i=3; i< 16; i++) {
-            .for(var j=37; j>=0; j--) {
-                lda SCREEN_RAM + $28 * i + j + 0
-                sta SCREEN_RAM + $28 * i + j + 1
-            }
-            lda MAP + $100 * i, x
-            sta SCREEN_RAM + $28 * i
-        }
-        rts
+    .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
+      .for (var j=37; j>=0; j--) {
+        lda SCREEN_RAM + $28 * i + j + 0
+        sta SCREEN_RAM + $28 * i + j + 1
+      }
+      lda MAP + $100 * i, x
+      sta SCREEN_RAM + $28 * i
+    }
+    rts
 }
 
-.label SCREEN_RAM = $7800
+* = * "DrawForeground"
+DrawForeground: {
+    ldx #0
+  !:
+    lda MAP + (ScreenPart3HigherRow * 256), x
+    sta SCREEN_RAM + (ScreenPart3HigherRow * 40), x
+    inx
+    cpx #40
+    bne !-
+
+    rts
+}
+
+.label SCREEN_RAM = $4000
 
 .segment MapData
 
 * = $7000 "CharMemory"
 CHAR_MEMORY:
-    .import binary "./assets/charset.bin"
+  .import binary "./assets/charset.bin"
 * = $7800 "Map"
 MAP:
-    .import binary "./assets/map.bin"
+  .import binary "./assets/map.bin"
 
 * = * "ColorMap"
 COLOR_MAP:
-    .import binary "./assets/colors.bin"
+  .import binary "./assets/colors.bin"
 
 
 VIC: {
