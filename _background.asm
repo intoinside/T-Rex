@@ -1,7 +1,6 @@
+#importonce
 
 .macro SetupRasterIrq(line, irq) {
-    sei
-
     // Disattiva gli interrupt che possono arrivare dalla CIA-1
     lda #%01111111
     sta $dc0d
@@ -14,30 +13,16 @@
     lda $dc0d
     lda $dd0d
 
-    ChangeRasterIrq(line, irq)
-
     // Abilita gli interrupt del Vic-II
     lda #%00000001
     sta $d01a
 
-    // Abilito tutti gli sprite
-    lda #%11111111
-    sta $d015
-
-    // Riabilito il lancio degli interrupt
-    cli
-}
-
-.macro ChangeRasterIrq(line, irq) {
-// Imposto il primo interrupt alla riga 149
-    lda #line
-    sta $d012
-
-// Imposto la routine all'indirizzo Irq
-    lda #<irq
-    sta $0314
-    lda #>irq
-    sta $0315
+    lda #<Irq0
+    sta $fffe
+    lda #>Irq0
+    sta $ffff
+    lda #0
+    sta c64lib.RASTER
 }
 
 .macro ManyNop(nopCount) {
@@ -46,7 +31,7 @@
     }
 }
 
-Irq0: {
+Irq0: { // 50
     lda #$ff
     sta $d019
 
@@ -54,84 +39,183 @@ Irq0: {
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(80, Irq1)
+    lda #<Irq1
+    sta $fffe
+    lda #>Irq1
+    sta $ffff
+    lda #52
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
 }
 
-Irq1: {
+Irq1: { // 52
     lda #$ff
     sta $d019
 
-    ManyNop(6)
+    ManyNop(20)
 
     lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(82, Irq2)
+    lda #<Irq2
+    sta $fffe
+    lda #>Irq2
+    sta $ffff
+    lda #54
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
 }
 
-Irq2: {
+Irq2: { // 54
     lda #$ff
     sta $d019
 
-    ManyNop(15)
+    ManyNop(20)
 
     lda #CYAN
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(84, Irq3)
+    lda #<Irq3
+    sta $fffe
+    lda #>Irq3
+    sta $ffff
+    lda #56
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
 }
 
-Irq3: {
+Irq3: { // 56
     lda #$ff
     sta $d019
 
-    ManyNop(17)
+    ManyNop(20)
 
     lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(87, Irq4)
+    lda #<Irq4
+    sta $fffe
+    lda #>Irq4
+    sta $ffff
+    lda #59
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
 }
 
-Irq4: {
+Irq4: { // 59
     lda #$ff
     sta $d019
 
-    ManyNop(4)
+    ManyNop(30)
 
     lda #CYAN
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(89, Irq5)
+    lda #<Irq5
+    sta $fffe
+    lda #>Irq5
+    sta $ffff
+    lda #61
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
 }
 
-Irq5: {
+Irq5: { // 61
     lda #$ff
     sta $d019
 
-    ManyNop(6)
+    ManyNop(8)
 
     lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
-    ChangeRasterIrq(10, Irq0)
+    lda #<RasterLandscapeStart
+    sta $fffe
+    lda #>RasterLandscapeStart
+    sta $ffff
+    lda #64
+    sta c64lib.RASTER
 
-    jmp $ea81
+    rti
+}
+
+* = * "RasterLandscapeStart"
+/* Raster line for landscape */
+RasterLandscapeStart: {
+    sta ModA + 1
+    stx ModX + 1
+    sty ModY + 1
+
+    // Landscape
+    lda MapPositionLandscape + 0
+    ora #%00010000
+    sta c64lib.CONTROL_2
+
+    lda #<RasterForegroundStart
+    sta $fffe
+    lda #>RasterForegroundStart
+    sta $ffff
+    lda #144
+    sta c64lib.RASTER
+  ModA:
+    lda #$00
+  ModX:
+    ldx #$00
+  ModY:
+    ldy #$00
+    asl c64lib.IRR               // Interrupt status register
+    rti
+}
+
+* = * "RasterForegroundStart"
+/* Raster line for foreground */
+RasterForegroundStart: {
+    sta ModA + 1
+    stx ModX + 1
+    sty ModY + 1
+
+    // Foreground
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+
+    lda MapPositionBottom + 0
+    ora #%00010000
+    sta c64lib.CONTROL_2
+
+    lda #<Irq0
+    sta $fffe
+    lda #>Irq0
+    sta $ffff
+    lda #0
+    sta c64lib.RASTER
+
+  ModA:
+    lda #$00
+  ModX:
+    ldx #$00
+  ModY:
+    ldy #$00
+    asl c64lib.IRR
+    rti
 }
 
 * = * "ScrollLandscape"
@@ -175,8 +259,8 @@ ScrollLandscape: {
     rts
 }
 
-.label ScreenPart1LowerRow = 3
-.label ScreenPart2LowerRow = 16
+.label ScreenPart1LowerRow = 0
+.label ScreenPart2LowerRow = 9
 .label ScreenPart3HigherRow = 20
 
 * = * "ShiftMapLandscape"
@@ -225,24 +309,6 @@ DrawForeground: {
 
 .label SCREEN_RAM = $4000
 
-.segment MapData
-
-* = $7000 "CharMemory"
-CHAR_MEMORY:
-  .import binary "./assets/charset.bin"
-* = $7800 "Map"
-MAP:
-  .import binary "./assets/map.bin"
-
-* = * "ColorMap"
-COLOR_MAP:
-  .import binary "./assets/colors.bin"
-
-
-VIC: {
-	.label COLOR_RAM			= $d800
-}
-
 MapPositionBottom:
     .byte $07, $00  //Frac/Full
 MapPositionLandscape:
@@ -251,3 +317,7 @@ Direction:          // Actual game direction
     .byte $01       // $00 - no move, $01 - right, $ff - left
 MapSpeed:
     .byte $00,$01
+
+FrameFlag: .byte $00
+
+#import "_label.asm"

@@ -1,15 +1,15 @@
 
 .segmentdef Code [start=$0810]
-.segmentdef MapData [start=$7800]
+.segmentdef Assets [start=$6000]
 
-.file [name="./T-Rex.prg", segments="Code, MapData", modify="BasicUpstart", _start=$0810]
+.file [name="./T-Rex.prg", segments="Code, Assets", modify="BasicUpstart", _start=$0810]
 .disk [filename="./T-Rex.d64", name="T-REX", id="C2022", showInfo]
 {
   [name="--- RAFFAELE ---", type="rel"],
   [name="--- INTORCIA ---", type="rel"],
   [name="-- @GMAIL.COM --", type="rel"],
   [name="----------------", type="rel"],
-  [name="T-REX", type="prg", segments="Code, MapData", modify="BasicUpstart", _start=$0810],
+  [name="T-REX", type="prg", segments="Code, Assets", modify="BasicUpstart", _start=$0810],
   [name="----------------", type="rel"]
 }
 
@@ -17,6 +17,7 @@
 
 * = $0810 "Entry"
 Entry: {
+    sei
     SetupRasterIrq(10, Irq0)
 
     lda #%00000010
@@ -41,13 +42,6 @@ Entry: {
                         // 38 columns
                         // Multicolor mode on
 
-    lda #<RasterLandscapeStart
-    sta $fffe
-    lda #>RasterLandscapeStart
-    sta $ffff
-    lda #32
-    sta c64lib.RASTER           // Raster line at $ff
-
     lda c64lib.CONTROL_1           // Screen control register #1
     and #%01111111
     sta c64lib.CONTROL_1           // Vertical raster scroll
@@ -55,7 +49,8 @@ Entry: {
                         // Screen on
                         // Bitmap mode on
                         // Extended background mode on
-
+    cli
+    
     lda #BLACK
     sta c64lib.BG_COL_1
     lda #DARK_GREY
@@ -72,77 +67,5 @@ Entry: {
 
     rts
 }
-
-* = * "RasterLandscapeStart"
-/* Raster line for landscape */
-RasterLandscapeStart: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
-
-    // Landscape
-    lda MapPositionLandscape + 0
-    ora #%00010000
-    sta c64lib.CONTROL_2
-
-    lda #<RasterForegroundStart
-    sta $fffe
-    lda #>RasterForegroundStart
-    sta $ffff
-    lda #144
-    sta c64lib.RASTER
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
-    asl c64lib.IRR               // Interrupt status register
-    rti
-}
-
-* = * "RasterForegroundStart"
-/* Raster line for foreground */
-RasterForegroundStart: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
-
-    // Foreground
-    // waste some cycles to stabilize the line
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-
-    lda MapPositionBottom + 0
-    ora #%00010000
-    sta c64lib.CONTROL_2
-
-    lda #<RasterLandscapeStart
-    sta $fffe
-    lda #>RasterLandscapeStart
-    sta $ffff
-    lda #32
-    sta c64lib.RASTER
-
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
-    asl c64lib.IRR
-    rti
-}
-
-FrameFlag: .byte $00
 
 #import "_label.asm"
