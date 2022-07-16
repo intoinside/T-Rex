@@ -56,6 +56,8 @@ Entry: {
     lda #DARK_GREY
     sta c64lib.BG_COL_2
 
+    SetupSprites()
+
     jsr DrawForeground
 
   !:
