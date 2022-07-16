@@ -34,4 +34,29 @@ Sprite recap:
     sta c64lib.SPRITE_ENABLE
 }
 
+* = * "SwitchDinoFrame"
+SwitchDinoFrame: {
+    dec Waiter
+    bne Done
+    lda #WaitCount
+    sta Waiter
+    lda SCREEN_RAM + $3f8
+    cmp #SPRITES_PTR.DINO_1
+    beq SwitchTo2
+    lda #SPRITES_PTR.DINO_1
+    jmp Change
+    
+  SwitchTo2:
+    lda #SPRITES_PTR.DINO_2
+  
+  Change:
+    sta SCREEN_RAM + $3f8
+
+  Done:
+    rts
+  
+  .label WaitCount = 15
+  Waiter: .byte WaitCount
+}
+
 #import "_label.asm"

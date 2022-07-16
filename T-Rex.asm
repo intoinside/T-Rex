@@ -64,6 +64,7 @@ Entry: {
     lda c64lib.RASTER
     bne !-
     jsr ScrollLandscape
+    jsr SwitchDinoFrame
     ManyNop(20);
     jmp !-
 
