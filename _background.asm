@@ -201,6 +201,47 @@ RasterForegroundStart: {
     ora #%00010000
     sta c64lib.CONTROL_2
 
+    lda #<RasterLowerForegroundStart
+    sta $fffe
+    lda #>RasterLowerForegroundStart
+    sta $ffff
+    lda #200
+    sta c64lib.RASTER
+
+  ModA:
+    lda #$00
+  ModX:
+    ldx #$00
+  ModY:
+    ldy #$00
+    asl c64lib.IRR
+    rti
+}
+
+* = * "RasterLowerForegroundStart"
+/* Raster line for lower foreground */
+RasterLowerForegroundStart: {
+    sta ModA + 1
+    stx ModX + 1
+    sty ModY + 1
+
+    // Foreground
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+
+    lda MapPositionLowerForeground + 0
+    ora #%00010000
+    sta c64lib.CONTROL_2
+
     lda #<Irq0
     sta $fffe
     lda #>Irq0
@@ -259,6 +300,46 @@ ScrollLandscape: {
     rts
 }
 
+ScrollLowerForeground: {
+    lda Direction
+    beq !NoShift+
+    bpl !Forward+
+
+  !Backward:
+    //Increment map-position
+    lda MapPositionLowerForeground + 0
+    clc
+    adc MapSpeed + 1
+    sta MapPositionLowerForeground + 0
+    cmp #$08
+    bcc !NoShift+
+
+    //Shift map
+    sbc #$08
+    sta MapPositionLowerForeground + 0
+    dec MapPositionLowerForeground + 1
+    ldx MapPositionLowerForeground + 1
+    jsr ShiftMapLowerForegroundBack
+  !NoShift:
+    rts
+
+  !Forward:
+    //Increment map-position
+    lda MapPositionLowerForeground + 0
+    sec
+    sbc MapSpeed + 1
+    sta MapPositionLowerForeground + 0
+    bcs !NoShift+
+    //Shift map
+    adc #$08
+    sta MapPositionLowerForeground + 0
+    inc MapPositionLowerForeground + 1
+    ldx MapPositionLowerForeground + 1
+    jsr ShiftMapLowerForeground
+  !NoShift:
+    rts
+}
+
 .label ScreenPart1LowerRow = 0
 .label ScreenPart2LowerRow = 9
 .label ScreenPart3HigherRow = 20
@@ -282,12 +363,48 @@ ShiftMapLandscape: {
       lda COLOR_MAP, y
       sta c64lib.COLOR_RAM + $28 * i + $26
     }
+
+    rts
+}
+
+* = * "ShiftMapLowerForeground"
+ShiftMapLowerForeground: {
+    .for (var i=ScreenPart3HigherRow; i < 25; i++) {
+      .for (var j=0; j<38; j++) {
+        ldy SCREEN_RAM + $28 * i + j + 1
+        sty SCREEN_RAM + $28 * i + j + 0
+        lda COLOR_MAP, y
+        sta c64lib.COLOR_RAM + $28 * i + j + 0
+      }
+      ldy MAP + $100 * i, x
+      sty SCREEN_RAM + $28 * i + $26
+      lda COLOR_MAP, y
+      sta c64lib.COLOR_RAM + $28 * i + $26
+    }
+
     rts
 }
 
 * = * "ShiftMapLandscapeBack"
 ShiftMapLandscapeBack: {
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
+      .for (var j=37; j>=0; j--) {
+        ldy SCREEN_RAM + $28 * i + j + 0
+        sty SCREEN_RAM + $28 * i + j + 1
+        lda COLOR_MAP, y
+        sta c64lib.COLOR_RAM + $28 * i + j + 1
+      }
+      ldy MAP + $100 * i, x
+      sty SCREEN_RAM + $28 * i
+      lda COLOR_MAP, y
+      sta c64lib.COLOR_RAM + $28 * i
+    }
+    rts
+}
+
+* = * "ShiftMapLowerForegroundBack"
+ShiftMapLowerForegroundBack: {
+    .for (var i=ScreenPart3HigherRow; i < 25; i++) {
       .for (var j=37; j>=0; j--) {
         ldy SCREEN_RAM + $28 * i + j + 0
         sty SCREEN_RAM + $28 * i + j + 1
@@ -317,10 +434,14 @@ DrawForeground: {
 
 .label SCREEN_RAM = $4000
 
-MapPositionBottom:
-    .byte $07, $00  //Frac/Full
 MapPositionLandscape:
     .byte $07, $00  //Frac/Full
+MapPositionBottom:
+    .byte $07, $00  //Frac/Full
+MapPositionLowerForeground:
+    .byte $07, $00  //Frac/Full
+
+
 Direction:          // Actual game direction
     .byte $01       // $00 - no move, $01 - right, $ff - left
 MapSpeed:

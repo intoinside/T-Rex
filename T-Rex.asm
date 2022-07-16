@@ -65,7 +65,8 @@ Entry: {
     bne !-
     jsr ScrollLandscape
     jsr SwitchDinoFrame
-    ManyNop(20);
+    jsr ScrollLowerForeground
+
     jmp !-
 
     rts
