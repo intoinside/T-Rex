@@ -272,11 +272,15 @@ ShiftMapLandscape: {
 
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
       .for (var j=0; j<38; j++) {
-        lda SCREEN_RAM + $28 * i + j + 1
-        sta SCREEN_RAM + $28 * i + j + 0
+        ldy SCREEN_RAM + $28 * i + j + 1
+        sty SCREEN_RAM + $28 * i + j + 0
+        lda COLOR_MAP, y
+        sta c64lib.COLOR_RAM + $28 * i + j + 0
       }
-      lda MAP + $100 * i, x
-      sta SCREEN_RAM + $28 * i + $26
+      ldy MAP + $100 * i, x
+      sty SCREEN_RAM + $28 * i + $26
+      lda COLOR_MAP, y
+      sta c64lib.COLOR_RAM + $28 * i + $26
     }
     rts
 }
@@ -285,11 +289,15 @@ ShiftMapLandscape: {
 ShiftMapLandscapeBack: {
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
       .for (var j=37; j>=0; j--) {
-        lda SCREEN_RAM + $28 * i + j + 0
-        sta SCREEN_RAM + $28 * i + j + 1
+        ldy SCREEN_RAM + $28 * i + j + 0
+        sty SCREEN_RAM + $28 * i + j + 1
+        lda COLOR_MAP, y
+        sta c64lib.COLOR_RAM + $28 * i + j + 1
       }
-      lda MAP + $100 * i, x
-      sta SCREEN_RAM + $28 * i
+      ldy MAP + $100 * i, x
+      sty SCREEN_RAM + $28 * i
+      lda COLOR_MAP, y
+      sta c64lib.COLOR_RAM + $28 * i
     }
     rts
 }
