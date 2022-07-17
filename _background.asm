@@ -6,8 +6,8 @@
     sta $dc0d
 
     // Azzera il bit 7 del registro raster del Vic-II
-    and $d011
-    sta $d011
+    and c64lib.CONTROL_1
+    sta c64lib.CONTROL_1
 
     // Conferma per gli interrupt generati da CIA-1 e CIA-2
     lda $dc0d
@@ -35,7 +35,7 @@ Irq0: { // 50
     lda #$ff
     sta $d019
 
-    lda #CYAN
+    lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
@@ -55,7 +55,7 @@ Irq1: { // 52
 
     ManyNop(20)
 
-    lda #LIGHT_GRAY
+    lda #CYAN
     sta $d020
     sta $d021
 
@@ -75,7 +75,7 @@ Irq2: { // 54
 
     ManyNop(20)
 
-    lda #CYAN
+    lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
@@ -95,7 +95,7 @@ Irq3: { // 56
 
     ManyNop(20)
 
-    lda #LIGHT_GRAY
+    lda #CYAN
     sta $d020
     sta $d021
 
@@ -115,7 +115,7 @@ Irq4: { // 59
 
     ManyNop(30)
 
-    lda #CYAN
+    lda #LIGHT_GRAY
     sta $d020
     sta $d021
 
@@ -135,7 +135,7 @@ Irq5: { // 61
 
     ManyNop(8)
 
-    lda #LIGHT_GRAY
+    lda #CYAN
     sta $d020
     sta $d021
 
@@ -340,17 +340,12 @@ ScrollLowerForeground: {
     rts
 }
 
-.label ScreenPart1LowerRow = 0
+.label ScreenPart1LowerRow = 2
 .label ScreenPart2LowerRow = 9
 .label ScreenPart3HigherRow = 20
 
 * = * "ShiftMapLandscape"
 ShiftMapLandscape: {
-    txa
-    clc
-    adc #$26
-    tax
-
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
       .for (var j=0; j<38; j++) {
         ldy SCREEN_RAM + $28 * i + j + 1
@@ -419,8 +414,8 @@ ShiftMapLowerForegroundBack: {
     rts
 }
 
-* = * "DrawForeground"
-DrawForeground: {
+* = * "DrawFixedForeground"
+DrawFixedForeground: {
     ldx #0
   !:
     lda MAP + (ScreenPart3HigherRow * 256), x

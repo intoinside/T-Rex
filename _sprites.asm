@@ -1,7 +1,14 @@
 #importonce
 /*
 Sprite recap:
-#0 - Dino
+
+#0 - Bomb
+#1 - Dino
+#2 - Pterodactyl
+#3 - Obstacle1
+#4 - Obstacle2
+
+#7 - Sun
 
 */
 
@@ -14,8 +21,8 @@ Sprite recap:
     lda c64lib.SPRITE_EXPAND_X
     lda c64lib.SPRITE_EXPAND_Y
 
-    lda #SPRITES_PTR.DINO_1
-    sta SCREEN_RAM + $3f8
+    lda #SPRITES_OFFSET.DINO_1
+    sta DINO_PTR
 
     lda #BLACK
     sta c64lib.SPRITE_COL_0
@@ -23,14 +30,14 @@ Sprite recap:
     sta c64lib.SPRITE_COL_1
 
     lda #GREEN
-    sta c64lib.SPRITE_0_COLOR
+    sta c64lib.SPRITE_1_COLOR
 
     lda #55
-    sta c64lib.SPRITE_0_X
+    sta c64lib.SPRITE_1_X
     lda #196
-    sta c64lib.SPRITE_0_Y
+    sta c64lib.SPRITE_1_Y
 
-    lda #%00000001
+    lda #%00000010
     sta c64lib.SPRITE_ENABLE
 }
 
@@ -40,17 +47,17 @@ SwitchDinoFrame: {
     bne Done
     lda #WaitCount
     sta Waiter
-    lda SCREEN_RAM + $3f8
-    cmp #SPRITES_PTR.DINO_1
+    lda DINO_PTR
+    cmp #SPRITES_OFFSET.DINO_1
     beq SwitchTo2
-    lda #SPRITES_PTR.DINO_1
+    lda #SPRITES_OFFSET.DINO_1
     jmp Change
     
   SwitchTo2:
-    lda #SPRITES_PTR.DINO_2
+    lda #SPRITES_OFFSET.DINO_2
   
   Change:
-    sta SCREEN_RAM + $3f8
+    sta DINO_PTR
 
   Done:
     rts
@@ -58,5 +65,7 @@ SwitchDinoFrame: {
   .label WaitCount = 15
   Waiter: .byte WaitCount
 }
+
+.label DINO_PTR = SCREEN_RAM + $3f9
 
 #import "_label.asm"

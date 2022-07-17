@@ -58,7 +58,7 @@ Entry: {
 
     SetupSprites()
 
-    jsr DrawForeground
+    jsr DrawFixedForeground
 
   !:
     lda c64lib.RASTER
