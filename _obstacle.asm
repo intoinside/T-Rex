@@ -12,6 +12,7 @@ Init: {
     rts
 }
 
+* = * "Obstacle.PrepareCactus"
 PrepareCactus: {
     lda #GREEN
     sta c64lib.SPRITE_3_COLOR
@@ -22,12 +23,26 @@ PrepareCactus: {
     rts
 }
 
+* = * "Obstacle.ShowObstacle"
+/* Show the obstacle */
 ShowObstacle: {
     lda c64lib.SPRITE_ENABLE
     ora #%00001000
     sta c64lib.SPRITE_ENABLE
 
     rts
+}
+
+* = * "Obstacle.MoveObstacle"
+/* Moves the obstacle according to foreground speed */
+MoveObstacle: {
+    ldx MapSpeedForeground
+  MoveIt:
+    dec c64lib.SPRITE_3_X
+    dex
+    bne MoveIt
+
+    rts   
 }
 
 .label PositionY = 196

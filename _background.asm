@@ -436,12 +436,11 @@ MapPositionBottom:
 MapPositionLowerForeground:
     .byte $07, $00  //Frac/Full
 
-
 Direction:          // Actual game direction
     .byte $01       // $00 - no move, $01 - right, $ff - left
 
-MapSpeedLandscape: .byte $01
-MapSpeedForeground: .byte $02
+MapSpeedLandscape: .byte 1
+MapSpeedForeground: .byte 2
 
 FrameFlag: .byte $00
 

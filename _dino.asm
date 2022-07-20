@@ -84,6 +84,8 @@ HandleJump: {
   ResetJump:
     lda #0
     sta IsJumping
+    lda #SPRITES_OFFSET.DINO_1
+    sta DINO_PTR
 
   Done:
     rts

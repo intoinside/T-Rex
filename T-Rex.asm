@@ -63,20 +63,23 @@ Entry: {
     jsr Dino.Init
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
+    jsr Obstacle.ShowObstacle
     IsReturnPressedAndReleased()
   !:
     lda c64lib.RASTER
     bne !-
+
+    jsr Obstacle.MoveObstacle
+
     jsr ScrollLandscape
     jsr ScrollLowerForeground
     jsr Dino.SwitchDinoFrame
     jsr Dino.HandleJump
-    jsr Obstacle.ShowObstacle
 
     ldx #255
   Wait:
     dex
-    ManyNop(6)
+    ManyNop(16)
     bne Wait
 
     IsReturnPressed()
