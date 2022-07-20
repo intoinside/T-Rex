@@ -66,8 +66,8 @@ Entry: {
     lda c64lib.RASTER
     bne !-
     jsr ScrollLandscape
-    jsr SwitchDinoFrame
     jsr ScrollLowerForeground
+    jsr Dino.SwitchDinoFrame
     jsr Dino.HandleJump
 
     ldx #255
