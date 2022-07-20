@@ -9,9 +9,18 @@ Init: {
     lda #PositionY
     sta c64lib.SPRITE_1_Y
 
+    lda #SPRITES_OFFSET.DINO_1
+    sta DINO_PTR
+
+    lda #GREEN
+    sta c64lib.SPRITE_1_COLOR
+
     lda #0
     sta IsJumping
     sta HandleJump.CurrentXFrame
+
+    lda #%00000010
+    sta c64lib.SPRITE_ENABLE
 }
 
 * = * "Dino.SwitchDinoFrame"
@@ -90,5 +99,7 @@ JumpMap:
 
 .label PositionX = 55
 .label PositionY = 196
+
+.label DINO_PTR = SCREEN_RAM + $3f8 + 1
 
 #import "_label.asm"

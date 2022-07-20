@@ -61,6 +61,8 @@ Entry: {
 
     jsr DrawFixedForeground
     jsr Dino.Init
+    jsr Obstacle.Init
+    jsr Obstacle.PrepareCactus
     IsReturnPressedAndReleased()
   !:
     lda c64lib.RASTER
@@ -69,6 +71,7 @@ Entry: {
     jsr ScrollLowerForeground
     jsr Dino.SwitchDinoFrame
     jsr Dino.HandleJump
+    jsr Obstacle.ShowObstacle
 
     ldx #255
   Wait:

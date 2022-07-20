@@ -23,6 +23,8 @@ SPRITES_OFFSET: {
   .label DINO_1 = FIRST_SPRITE_PTR
   .label DINO_2 = FIRST_SPRITE_PTR + 1
   .label DINO_JMP = FIRST_SPRITE_PTR + 2
+
+  .label CACTUS_1 = DINO_JMP + 1
 }
 
 #import "./_label.asm"
