@@ -17,6 +17,7 @@
 
 * = $0810 "Entry"
 Entry: {
+    IsReturnPressedAndReleased()
     sei
     SetupRasterIrq(10, Irq0)
 
@@ -59,13 +60,25 @@ Entry: {
     SetupSprites()
 
     jsr DrawFixedForeground
-
+    jsr Dino.Init
+    IsReturnPressedAndReleased()
   !:
     lda c64lib.RASTER
     bne !-
     jsr ScrollLandscape
     jsr SwitchDinoFrame
     jsr ScrollLowerForeground
+    jsr Dino.HandleJump
+
+    ldx #255
+  Wait:
+    dex
+    ManyNop(6)
+    bne Wait
+
+    IsReturnPressed()
+    beq !-
+    jsr Dino.Jump
 
     jmp !-
 

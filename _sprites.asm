@@ -32,11 +32,8 @@ Sprite recap:
     lda #GREEN
     sta c64lib.SPRITE_1_COLOR
 
-    lda #55
-    sta c64lib.SPRITE_1_X
-    lda #196
-    sta c64lib.SPRITE_1_Y
-
+    jsr Dino.Init
+    
     lda #%00000010
     sta c64lib.SPRITE_ENABLE
 }
