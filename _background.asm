@@ -269,7 +269,7 @@ ScrollLandscape: {
     //Increment map-position
     lda MapPositionLandscape + 0
     clc
-    adc MapSpeed + 1
+    adc MapSpeedLandscape
     sta MapPositionLandscape + 0
     cmp #$08
     bcc !NoShift+
@@ -287,7 +287,7 @@ ScrollLandscape: {
     //Increment map-position
     lda MapPositionLandscape + 0
     sec
-    sbc MapSpeed + 1
+    sbc MapSpeedLandscape
     sta MapPositionLandscape + 0
     bcs !NoShift+
     //Shift map
@@ -309,7 +309,7 @@ ScrollLowerForeground: {
     //Increment map-position
     lda MapPositionLowerForeground + 0
     clc
-    adc MapSpeed + 1
+    adc MapSpeedForeground
     sta MapPositionLowerForeground + 0
     cmp #$08
     bcc !NoShift+
@@ -327,7 +327,7 @@ ScrollLowerForeground: {
     //Increment map-position
     lda MapPositionLowerForeground + 0
     sec
-    sbc MapSpeed + 1
+    sbc MapSpeedForeground
     sta MapPositionLowerForeground + 0
     bcs !NoShift+
     //Shift map
@@ -439,8 +439,9 @@ MapPositionLowerForeground:
 
 Direction:          // Actual game direction
     .byte $01       // $00 - no move, $01 - right, $ff - left
-MapSpeed:
-    .byte $00,$01
+
+MapSpeedLandscape: .byte $01
+MapSpeedForeground: .byte $02
 
 FrameFlag: .byte $00
 
