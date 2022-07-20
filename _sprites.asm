@@ -32,38 +32,10 @@ Sprite recap:
     lda #GREEN
     sta c64lib.SPRITE_1_COLOR
 
-    lda #55
-    sta c64lib.SPRITE_1_X
-    lda #196
-    sta c64lib.SPRITE_1_Y
-
+    jsr Dino.Init
+    
     lda #%00000010
     sta c64lib.SPRITE_ENABLE
-}
-
-* = * "SwitchDinoFrame"
-SwitchDinoFrame: {
-    dec Waiter
-    bne Done
-    lda #WaitCount
-    sta Waiter
-    lda DINO_PTR
-    cmp #SPRITES_OFFSET.DINO_1
-    beq SwitchTo2
-    lda #SPRITES_OFFSET.DINO_1
-    jmp Change
-    
-  SwitchTo2:
-    lda #SPRITES_OFFSET.DINO_2
-  
-  Change:
-    sta DINO_PTR
-
-  Done:
-    rts
-  
-  .label WaitCount = 15
-  Waiter: .byte WaitCount
 }
 
 .label DINO_PTR = SCREEN_RAM + $3f9
