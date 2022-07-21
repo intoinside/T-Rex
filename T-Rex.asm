@@ -102,6 +102,8 @@ Entry: {
 SetGameEnded: {
     lda #1
     sta GameEnded
+    
+    jsr Dino.SetGameEnd
 
     rts
 }

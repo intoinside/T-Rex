@@ -93,9 +93,21 @@ HandleJump: {
   CurrentXFrame: .byte 0
 }
 
+* = * "Dino.CheckCollision"
 CheckCollision: {
     lda #%00011010
     and c64lib.SPRITE_2S_COLLISION
+
+    rts
+}
+
+* = * "Dino.SetGameEnd"
+SetGameEnd: {
+    lda #SPRITES_OFFSET.DINO_DEAD
+    sta DINO_PTR
+
+    lda #GRAY
+    sta c64lib.SPRITE_1_COLOR
 
     rts
 }
