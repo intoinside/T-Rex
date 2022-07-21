@@ -63,7 +63,6 @@ Entry: {
     jsr Dino.Init
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
-    jsr Obstacle.ShowObstacle
     IsReturnPressedAndReleased()
   !:
     lda c64lib.RASTER

@@ -18,5 +18,8 @@ CIA2: {
 #import "./_dino.asm"
 #import "./_obstacle.asm"
 #import "./_assets.asm"
+#import "./_utils.asm"
+#import "./chipset/lib/sprites.asm"
+#import "./chipset/lib/sprites-global.asm"
 #import "./chipset/lib/vic2.asm"
 #import "./chipset/lib/vic2-global.asm"
