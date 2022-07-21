@@ -93,6 +93,13 @@ HandleJump: {
   CurrentXFrame: .byte 0
 }
 
+CheckCollision: {
+    lda #%00011010
+    and c64lib.SPRITE_2S_COLLISION
+
+    rts
+}
+
 IsJumping: .byte 0
 
 .label TotalJumpFrame = 31

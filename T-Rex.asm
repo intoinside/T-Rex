@@ -68,6 +68,15 @@ Entry: {
     lda c64lib.RASTER
     bne !-
 
+    lda GameEnded
+    bne !-
+
+    jsr Dino.CheckCollision
+    beq !Proceed+
+    jsr SetGameEnded
+    jmp !-
+
+  !Proceed:
     jsr Obstacle.MoveObstacle
 
     jsr ScrollLandscape
@@ -89,5 +98,14 @@ Entry: {
 
     rts
 }
+
+SetGameEnded: {
+    lda #1
+    sta GameEnded
+
+    rts
+}
+
+GameEnded: .byte 0
 
 #import "_label.asm"
