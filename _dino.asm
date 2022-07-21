@@ -19,15 +19,18 @@ Init: {
     sta IsJumping
     sta HandleJump.CurrentXFrame
 
-    lda #%00000010
+    lda c64lib.SPRITE_ENABLE
+    ora #%00000010
     sta c64lib.SPRITE_ENABLE
+
+    rts
 }
 
 * = * "Dino.SwitchDinoFrame"
 SwitchDinoFrame: {
     lda IsJumping
     bne Done
-    
+
     dec Waiter
     bne Done
     lda #WaitCount
@@ -37,16 +40,16 @@ SwitchDinoFrame: {
     beq SwitchTo2
     lda #SPRITES_OFFSET.DINO_1
     jmp Change
-    
+
   SwitchTo2:
     lda #SPRITES_OFFSET.DINO_2
-  
+
   Change:
     sta DINO_PTR
 
   Done:
     rts
-  
+
   .label WaitCount = 15
   Waiter: .byte WaitCount
 }
@@ -63,6 +66,7 @@ Jump: {
 
     lda #SPRITES_OFFSET.DINO_JMP
     sta DINO_PTR
+
   Done:
     rts
 }

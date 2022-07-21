@@ -26,6 +26,10 @@ SPRITES_OFFSET: {
   .label DINO_DEAD = FIRST_SPRITE_PTR + 3
 
   .label CACTUS_1 = DINO_DEAD + 1
+  .label CACTUS_6 = DINO_DEAD + 6
+
+  .label SUN_1 = CACTUS_6 + 1
+  .label SUN_2 = CACTUS_6 + 2
 }
 
 #import "./_label.asm"

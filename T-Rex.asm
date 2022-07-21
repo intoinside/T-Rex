@@ -61,9 +61,11 @@ Entry: {
 
     jsr DrawFixedForeground
     jsr Dino.Init
+    jsr Sun.Init
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
     IsReturnPressedAndReleased()
+    
   !:
     lda c64lib.RASTER
     bne !-

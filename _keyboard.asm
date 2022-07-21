@@ -25,6 +25,8 @@ Init: {
     sta KEYB.BUFFER_LEN     // disable keyboard buffer
     lda #127
     sta KEYB.REPEAT_SWITCH  // disable key repeat
+
+    rts
 }
 
 * = * "Keyboard DetectKeyPressed"
