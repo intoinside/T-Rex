@@ -174,6 +174,7 @@ RasterLandscapeStart: {
   ModY:
     ldy #$00
     asl c64lib.IRR               // Interrupt status register
+
     rti
 }
 
@@ -215,6 +216,7 @@ RasterForegroundStart: {
   ModY:
     ldy #$00
     asl c64lib.IRR
+
     rti
 }
 
@@ -256,6 +258,7 @@ RasterLowerForegroundStart: {
   ModY:
     ldy #$00
     asl c64lib.IRR
+
     rti
 }
 
@@ -266,6 +269,7 @@ ScrollLandscape: {
     bpl !Forward+
 
   !Backward:
+  /*
     //Increment map-position
     lda MapPositionLandscape + 0
     clc
@@ -280,6 +284,7 @@ ScrollLandscape: {
     dec MapPositionLandscape + 1
     ldx MapPositionLandscape + 1
     jsr ShiftMapLandscapeBack
+    */
   !NoShift:
     rts
 
@@ -306,6 +311,7 @@ ScrollLowerForeground: {
     bpl !Forward+
 
   !Backward:
+  /*
     //Increment map-position
     lda MapPositionLowerForeground + 0
     clc
@@ -320,6 +326,7 @@ ScrollLowerForeground: {
     dec MapPositionLowerForeground + 1
     ldx MapPositionLowerForeground + 1
     jsr ShiftMapLowerForegroundBack
+    */
   !NoShift:
     rts
 
@@ -380,6 +387,7 @@ ShiftMapLowerForeground: {
     rts
 }
 
+/*
 * = * "ShiftMapLandscapeBack"
 ShiftMapLandscapeBack: {
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
@@ -413,6 +421,7 @@ ShiftMapLowerForegroundBack: {
     }
     rts
 }
+*/
 
 * = * "DrawFixedForeground"
 DrawFixedForeground: {
@@ -444,4 +453,4 @@ MapSpeedForeground: .byte 2
 
 FrameFlag: .byte $00
 
-#import "_label.asm"
+#import "./_label.asm"

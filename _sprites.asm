@@ -27,4 +27,4 @@ Sprite recap:
     sta c64lib.SPRITE_COL_1
 }
 
-#import "_label.asm"
+#import "./_label.asm"

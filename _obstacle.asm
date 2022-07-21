@@ -84,11 +84,11 @@ MoveObstacle: {
     sta c64lib.SPRITE_ENABLE
 
   Done:
-    rts   
+    rts
 }
 
 .label PositionY = 196
 
 .label OBSTACLE_1_PTR = SCREEN_RAM + $3f8 + 3
 
-#import "_label.asm"
+#import "./_label.asm"

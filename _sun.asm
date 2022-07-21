@@ -27,4 +27,4 @@ Init: {
 
 .label SUN_PTR = SCREEN_RAM + $3f8 + 7
 
-#import "_label.asm"
+#import "./_label.asm"

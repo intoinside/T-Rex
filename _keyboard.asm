@@ -60,6 +60,6 @@ KEYB: {
   .label REPEAT_SWITCH      = $028a
 }
 
-ReturnPressed:    .byte $00
+ReturnPressed: .byte $00
 
-#import "_label.asm"
+#import "./_label.asm"

@@ -127,4 +127,4 @@ JumpMap:
 
 .label DINO_PTR = SCREEN_RAM + $3f8 + 1
 
-#import "_label.asm"
+#import "./_label.asm"

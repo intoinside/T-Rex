@@ -65,7 +65,7 @@ Entry: {
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
     IsReturnPressedAndReleased()
-    
+
   !:
     lda c64lib.RASTER
     bne !-
@@ -112,4 +112,4 @@ SetGameEnded: {
 
 GameEnded: .byte 0
 
-#import "_label.asm"
+#import "./_label.asm"
