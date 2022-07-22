@@ -59,6 +59,7 @@ Entry: {
 
     SetupSprites()
 
+    jsr DrawFixedLandscape
     jsr DrawFixedForeground
     jsr Dino.Init
     jsr Sun.Init

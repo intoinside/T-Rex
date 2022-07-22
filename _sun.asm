@@ -22,8 +22,8 @@ Init: {
     rts
 }
 
-.label PositionX = 255
-.label PositionY = 50
+.label PositionX = 205
+.label PositionY = 48
 
 .label SUN_PTR = SCREEN_RAM + $3f8 + 7
 

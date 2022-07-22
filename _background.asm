@@ -46,6 +46,12 @@ Irq0: { // 50
     lda #52
     sta c64lib.RASTER
 
+// Disable smooth scrolling and multicolor while showing 
+// score and hiscore
+    lda c64lib.CONTROL_2
+    and #%11101000
+    sta c64lib.CONTROL_2
+
     rti
 }
 
@@ -143,7 +149,7 @@ Irq5: { // 61
     sta $fffe
     lda #>RasterLandscapeStart
     sta $ffff
-    lda #64
+    lda #66
     sta c64lib.RASTER
 
     rti
@@ -423,12 +429,42 @@ ShiftMapLowerForegroundBack: {
 }
 */
 
+* = * "DrawFixedLandscape"
+DrawFixedLandscape: {
+    ldx #0
+  !:
+    lda MAP, x
+    sta SCREEN_RAM, x
+    tay
+    lda COLOR_MAP, y
+    sta c64lib.COLOR_RAM, x
+    inx
+    cpx #40
+    bne !-
+
+    ldx #0
+  !:
+    lda MAP + 256, x
+    sta SCREEN_RAM + 40, x
+    tay
+    lda COLOR_MAP, y
+    sta c64lib.COLOR_RAM + 40, x
+    inx
+    cpx #40
+    bne !-
+
+    rts
+}
+
 * = * "DrawFixedForeground"
 DrawFixedForeground: {
     ldx #0
   !:
     lda MAP + (ScreenPart3HigherRow * 256), x
     sta SCREEN_RAM + (ScreenPart3HigherRow * 40), x
+    tay
+    lda COLOR_MAP, y
+    sta c64lib.COLOR_RAM + (ScreenPart3HigherRow * 40), x
     inx
     cpx #40
     bne !-
