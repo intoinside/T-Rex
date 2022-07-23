@@ -46,6 +46,7 @@ SwitchDinoFrame: {
 
   Change:
     sta DINO_PTR
+    AddPoints(0, 1)
 
   Done:
     rts
@@ -91,6 +92,8 @@ HandleJump: {
     lda #SPRITES_OFFSET.DINO_1
     sta DINO_PTR
 
+    AddPoints(1, 0)
+
   Done:
     rts
 
@@ -118,9 +121,9 @@ SetGameEnd: {
 
 IsJumping: .byte 0
 
-.label TotalJumpFrame = 35
+.label TotalJumpFrame = 38
 JumpMap:
-.fill TotalJumpFrame, round(PositionY - 50.5*sin(toRadians(360*i/((TotalJumpFrame - 1) * 2))))
+.fill TotalJumpFrame, round(PositionY - 45*sin(toRadians(360*i/((TotalJumpFrame - 1) * 2))))
 
 .label PositionX = 55
 .label PositionY = 196

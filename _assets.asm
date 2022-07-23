@@ -18,6 +18,13 @@ MAP:
 COLOR_MAP:
   .import binary "./assets/colors.bin"
 
+.label ScoreOnScreen = SCREEN_RAM + c64lib_getTextOffset(34, 1)
+
+CHAR_POSITIONS: {
+  .label CHAR_0 = 48;
+  .label CHAR_9 = 57;
+}
+
 SPRITES_OFFSET: {
   .label FIRST_SPRITE_PTR = ((SPRITES - SCREEN_RAM) / 64)
   .label DINO_1 = FIRST_SPRITE_PTR
