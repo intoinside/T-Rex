@@ -118,9 +118,9 @@ SetGameEnd: {
 
 IsJumping: .byte 0
 
-.label TotalJumpFrame = 31
+.label TotalJumpFrame = 35
 JumpMap:
-.fill TotalJumpFrame, round(PositionY - 50.5*sin(toRadians(360*i/60)))
+.fill TotalJumpFrame, round(PositionY - 50.5*sin(toRadians(360*i/((TotalJumpFrame - 1) * 2))))
 
 .label PositionX = 55
 .label PositionY = 196
