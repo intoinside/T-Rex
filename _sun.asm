@@ -15,6 +15,10 @@ Init: {
     lda #YELLOW
     sta c64lib.SPRITE_7_COLOR
 
+    lda c64lib.SPRITE_PRIORITY
+    ora #%10000000
+    sta c64lib.SPRITE_PRIORITY
+
     lda c64lib.SPRITE_ENABLE
     ora #%10000000
     sta c64lib.SPRITE_ENABLE
@@ -22,8 +26,8 @@ Init: {
     rts
 }
 
-.label PositionX = 205
-.label PositionY = 48
+.label PositionX = 255
+.label PositionY = 68
 
 .label SUN_PTR = SCREEN_RAM + $3f8 + 7
 

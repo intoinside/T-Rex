@@ -77,7 +77,7 @@ Irq1: { // 52
     lda #$ff
     sta c64lib.IRR
 
-    ManyNop(20)
+    ManyNop(16)
 
     lda #CYAN
     sta c64lib.BORDER_COL
@@ -101,7 +101,7 @@ Irq2: { // 54
     lda #$ff
     sta c64lib.IRR
 
-    ManyNop(20)
+    ManyNop(18)
 
     lda #LIGHT_GRAY
     sta c64lib.BORDER_COL
