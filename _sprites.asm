@@ -20,6 +20,7 @@ Sprite recap:
     sta c64lib.SPRITE_MSB_X
     lda c64lib.SPRITE_EXPAND_X
     lda c64lib.SPRITE_EXPAND_Y
+    sta c64lib.SPRITE_ENABLE
 
     lda #BLACK
     sta c64lib.SPRITE_COL_0

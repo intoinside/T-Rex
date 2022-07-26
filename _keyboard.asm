@@ -18,6 +18,24 @@
     bne !-
 }
 
+.macro IsSpacePressed() {
+    lda #%01111111
+    sta Keyboard.DetectKeyPressed.MaskOnPortA
+    lda #%00010000
+    sta Keyboard.DetectKeyPressed.MaskOnPortB
+    jsr Keyboard.DetectKeyPressed
+    sta Keyboard.SpacePressed
+}
+
+.macro IsSpacePressedAndReleased() {
+  !:
+    IsSpacePressed()
+    beq !-
+  !:
+    jsr Keyboard.DetectKeyPressed
+    bne !-
+}
+
 .filenamespace Keyboard
 
 Init: {
@@ -61,5 +79,6 @@ KEYB: {
 }
 
 ReturnPressed: .byte $00
+SpacePressed: .byte $00
 
 #import "./_label.asm"

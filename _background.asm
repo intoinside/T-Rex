@@ -29,7 +29,7 @@
                           // Screen on
                           // Bitmap mode on
                           // Extended background mode on
- 
+
     lda #<Irq0
     sta $fffe
     lda #>Irq0
@@ -37,10 +37,24 @@
     lda #0
     sta c64lib.RASTER
 
-    lda #%00000001
-    sta c64lib.IMR
-
     cli
+}
+
+Background_Init: {
+    lda #0
+    sta MapPositionLandscape + 1
+    sta MapPositionBottom + 1
+    sta MapPositionLowerForeground + 1
+
+    lda #7
+    sta MapPositionLandscape
+    sta MapPositionBottom
+    sta MapPositionLowerForeground
+
+    lda #StartMapSpeedForeground
+    sta MapSpeedForeground
+
+    rts
 }
 
 Irq0: { // 0
@@ -471,8 +485,10 @@ MapPositionLowerForeground:
 Direction:          // Actual game direction
     .byte $01       // $00 - no move, $01 - right, $ff - left
 
+.label StartMapSpeedForeground = 2;
 MapSpeedLandscape: .byte 1
-MapSpeedForeground: .byte 2
+MapSpeedForeground: .byte StartMapSpeedForeground
+
 
 FrameFlag: .byte $00
 
