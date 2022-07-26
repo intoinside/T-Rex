@@ -4,8 +4,6 @@
 
 * = * "Obstacle.Init"
 Init: {
-    lda #255
-    sta c64lib.SPRITE_3_X
     lda #PositionY
     sta c64lib.SPRITE_3_Y
 

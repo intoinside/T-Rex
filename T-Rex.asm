@@ -24,8 +24,15 @@ Entry: {
     lda #DARK_GREY
     sta c64lib.BG_COL_2
 
+  StartGame:
+    lda #%00000001
+    sta c64lib.IMR
+
     SetupSprites()
 
+    jsr Background_Init
+
+    jsr Utils.ResetScore
     jsr DrawScoreRows
     jsr DrawFixedForeground
     jsr Dino.Init
@@ -35,12 +42,16 @@ Entry: {
 
     IsReturnPressedAndReleased()
 
+    lda #0
+    sta GameEnded
+    asl c64lib.SPRITE_2S_COLLISION
+
   !:
     lda c64lib.RASTER
     bne !-
 
     lda GameEnded
-    bne !-
+    bne WaitForGameRestart
 
     jsr Dino.CheckCollision
     beq !Proceed+
@@ -68,13 +79,21 @@ Entry: {
     jmp !-
 
     rts
+
+  WaitForGameRestart:
+    IsSpacePressedAndReleased()
+    jmp StartGame
 }
 
+* = * "SetGameEnded"
 SetGameEnded: {
     lda #1
     sta GameEnded
     
     jsr Dino.SetGameEnd
+
+    lda #%00000000
+    sta c64lib.IMR
 
     rts
 }
