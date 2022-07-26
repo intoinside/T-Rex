@@ -28,13 +28,16 @@ Init: {
 
 * = * "Dino.SwitchDinoFrame"
 SwitchDinoFrame: {
-    lda IsJumping
-    bne Done
-
     dec Waiter
     bne Done
     lda #WaitCount
     sta Waiter
+
+    AddPoints(0, 1)
+
+    lda IsJumping
+    bne Done
+
     lda DINO_PTR
     cmp #SPRITES_OFFSET.DINO_1
     beq SwitchTo2
@@ -46,7 +49,6 @@ SwitchDinoFrame: {
 
   Change:
     sta DINO_PTR
-    AddPoints(0, 1)
 
   Done:
     rts
@@ -91,8 +93,6 @@ HandleJump: {
     sta IsJumping
     lda #SPRITES_OFFSET.DINO_1
     sta DINO_PTR
-
-    AddPoints(1, 0)
 
   Done:
     rts
