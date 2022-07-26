@@ -17,40 +17,7 @@
 
 * = $0810 "Entry"
 Entry: {
-    IsReturnPressedAndReleased()
-    sei
-    SetupRasterIrq(10, Irq0)
-
-    lda #%00000010
-    sta $dd00                // Select Vic Bank #1, $4000-$7fff
-
-    lda #$7f
-    sta $dc0d
-    sta $dd0d
-
-    lda #%00110101      // Bit 0-2:
-    sta $01             // RAM visible at $a000-$bfff and $e000-$ffff
-                        // I/O area visible at $d000-$dfff
-
-    lda #%00001100
-    sta c64lib.MEMORY_CONTROL           // Pointer to char memory $0800-$0fff
-                        // Pointer to screen memory $0000-$03ff
-
-    lda c64lib.CONTROL_2           // Screen control register #2
-    and #%11110111
-    ora #%00010111
-    sta c64lib.CONTROL_2           // Horizontal raster scroll
-                        // 38 columns
-                        // Multicolor mode on
-
-    lda c64lib.CONTROL_1           // Screen control register #1
-    and #%01111111
-    sta c64lib.CONTROL_1           // Vertical raster scroll
-                        // 25 rows
-                        // Screen on
-                        // Bitmap mode on
-                        // Extended background mode on
-    cli
+    SetupRasterIrq(Irq0)
     
     lda #BLACK
     sta c64lib.BG_COL_1
@@ -59,12 +26,13 @@ Entry: {
 
     SetupSprites()
 
-    jsr DrawFixedLandscape
+    jsr DrawScoreRows
     jsr DrawFixedForeground
     jsr Dino.Init
     jsr Sun.Init
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
+
     IsReturnPressedAndReleased()
 
   !:

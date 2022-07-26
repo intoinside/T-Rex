@@ -1,43 +1,57 @@
 #importonce
 
-.macro SetupRasterIrq(line, irq) {
-    // Disattiva gli interrupt che possono arrivare dalla CIA-1
-    lda #%01111111
+.macro SetupRasterIrq(irq) {
+    sei
+
+    lda #%00000010
+    sta $dd00                // Select Vic Bank #1, $4000-$7fff
+
+    lda #$7f
     sta $dc0d
+    sta $dd0d
 
-    // Azzera il bit 7 del registro raster del Vic-II
-    and c64lib.CONTROL_1
-    sta c64lib.CONTROL_1
+    lda #%00110101      // Bit 0-2:
+    sta $01             // RAM visible at $a000-$bfff and $e000-$ffff
+                        // I/O area visible at $d000-$dfff
 
-    // Conferma per gli interrupt generati da CIA-1 e CIA-2
-    lda $dc0d
-    lda $dd0d
+    lda #%00001100
+    sta c64lib.MEMORY_CONTROL // Pointer to char memory $0800-$0fff
+                              // Pointer to screen memory $0000-$03ff
 
-    // Abilita gli interrupt del Vic-II
-    lda #%00000001
-    sta $d01a
+    lda c64lib.CONTROL_2
+    and #%11101000
+    sta c64lib.CONTROL_2
 
+    lda c64lib.CONTROL_1
+    and #%01111111
+    sta c64lib.CONTROL_1  // Vertical raster scroll
+                          // 25 rows
+                          // Screen on
+                          // Bitmap mode on
+                          // Extended background mode on
+ 
     lda #<Irq0
     sta $fffe
     lda #>Irq0
     sta $ffff
     lda #0
     sta c64lib.RASTER
+
+    lda #%00000001
+    sta c64lib.IMR
+
+    cli
 }
 
-.macro ManyNop(nopCount) {
-    .for (var i = 0; i < nopCount; i++) {
-      nop
-    }
-}
+Irq0: { // 0
+    pushStatus()
 
-Irq0: { // 50
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     lda #LIGHT_GRAY
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<Irq1
     sta $fffe
@@ -46,24 +60,28 @@ Irq0: { // 50
     lda #52
     sta c64lib.RASTER
 
-// Disable smooth scrolling and multicolor while showing 
+// Disable smooth scrolling and multicolor while showing
 // score and hiscore
     lda c64lib.CONTROL_2
     and #%11101000
     sta c64lib.CONTROL_2
 
+    popStatus()
+
     rti
 }
 
 Irq1: { // 52
+    pushStatus()
+
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     ManyNop(20)
 
     lda #CYAN
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<Irq2
     sta $fffe
@@ -72,18 +90,22 @@ Irq1: { // 52
     lda #54
     sta c64lib.RASTER
 
+    popStatus()
+
     rti
 }
 
 Irq2: { // 54
+    pushStatus()
+
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     ManyNop(20)
 
     lda #LIGHT_GRAY
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<Irq3
     sta $fffe
@@ -92,18 +114,22 @@ Irq2: { // 54
     lda #56
     sta c64lib.RASTER
 
+    popStatus()
+
     rti
 }
 
 Irq3: { // 56
+    pushStatus()
+
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     ManyNop(20)
 
     lda #CYAN
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<Irq4
     sta $fffe
@@ -112,18 +138,22 @@ Irq3: { // 56
     lda #59
     sta c64lib.RASTER
 
+    popStatus()
+
     rti
 }
 
 Irq4: { // 59
+    pushStatus()
+
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     ManyNop(30)
 
     lda #LIGHT_GRAY
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<Irq5
     sta $fffe
@@ -132,18 +162,22 @@ Irq4: { // 59
     lda #61
     sta c64lib.RASTER
 
+    popStatus()
+
     rti
 }
 
 Irq5: { // 61
+    pushStatus()
+
     lda #$ff
-    sta $d019
+    sta c64lib.IRR
 
     ManyNop(8)
 
     lda #CYAN
-    sta $d020
-    sta $d021
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
 
     lda #<RasterLandscapeStart
     sta $fffe
@@ -152,15 +186,18 @@ Irq5: { // 61
     lda #66
     sta c64lib.RASTER
 
+    popStatus()
+
     rti
 }
 
 * = * "RasterLandscapeStart"
 /* Raster line for landscape */
-RasterLandscapeStart: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
+RasterLandscapeStart: { // 66
+    pushStatus()
+
+    lda #YELLOW
+    sta $d020
 
     // Landscape
     lda MapPositionLandscape + 0
@@ -173,23 +210,21 @@ RasterLandscapeStart: {
     sta $ffff
     lda #144
     sta c64lib.RASTER
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
+
     asl c64lib.IRR               // Interrupt status register
+
+    popStatus()
 
     rti
 }
 
 * = * "RasterForegroundStart"
 /* Raster line for foreground */
-RasterForegroundStart: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
+RasterForegroundStart: {  // 144
+    pushStatus()
+
+    lda #LIGHT_RED
+    sta $d020
 
     // Foreground
     nop
@@ -204,8 +239,11 @@ RasterForegroundStart: {
     nop
     nop
 
-    lda MapPositionBottom + 0
-    ora #%00010000
+    // lda MapPositionBottom + 0
+    // ora #%00010000
+    // sta c64lib.CONTROL_2
+
+    lda #%00010000
     sta c64lib.CONTROL_2
 
     lda #<RasterLowerForegroundStart
@@ -215,13 +253,9 @@ RasterForegroundStart: {
     lda #200
     sta c64lib.RASTER
 
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
     asl c64lib.IRR
+
+    popStatus()
 
     rti
 }
@@ -229,9 +263,7 @@ RasterForegroundStart: {
 * = * "RasterLowerForegroundStart"
 /* Raster line for lower foreground */
 RasterLowerForegroundStart: {
-    sta ModA + 1
-    stx ModX + 1
-    sty ModY + 1
+    pushStatus()
 
     // Foreground
     nop
@@ -257,13 +289,9 @@ RasterLowerForegroundStart: {
     lda #0
     sta c64lib.RASTER
 
-  ModA:
-    lda #$00
-  ModX:
-    ldx #$00
-  ModY:
-    ldy #$00
     asl c64lib.IRR
+
+    popStatus()
 
     rti
 }
@@ -272,41 +300,20 @@ RasterLowerForegroundStart: {
 ScrollLandscape: {
     lda Direction
     beq !NoShift+
-    bpl !Forward+
 
-  !Backward:
-  /*
-    //Increment map-position
-    lda MapPositionLandscape + 0
-    clc
-    adc MapSpeedLandscape
-    sta MapPositionLandscape + 0
-    cmp #$08
-    bcc !NoShift+
-
-    //Shift map
-    sbc #$08
-    sta MapPositionLandscape + 0
-    dec MapPositionLandscape + 1
-    ldx MapPositionLandscape + 1
-    jsr ShiftMapLandscapeBack
-    */
-  !NoShift:
-    rts
-
-  !Forward:
-    //Increment map-position
+    // Increment map-position
     lda MapPositionLandscape + 0
     sec
     sbc MapSpeedLandscape
     sta MapPositionLandscape + 0
     bcs !NoShift+
-    //Shift map
-    adc #$08
+    // Shift map
+    adc #8
     sta MapPositionLandscape + 0
     inc MapPositionLandscape + 1
     ldx MapPositionLandscape + 1
     jsr ShiftMapLandscape
+
   !NoShift:
     rts
 }
@@ -314,41 +321,20 @@ ScrollLandscape: {
 ScrollLowerForeground: {
     lda Direction
     beq !NoShift+
-    bpl !Forward+
 
-  !Backward:
-  /*
-    //Increment map-position
-    lda MapPositionLowerForeground + 0
-    clc
-    adc MapSpeedForeground
-    sta MapPositionLowerForeground + 0
-    cmp #$08
-    bcc !NoShift+
-
-    //Shift map
-    sbc #$08
-    sta MapPositionLowerForeground + 0
-    dec MapPositionLowerForeground + 1
-    ldx MapPositionLowerForeground + 1
-    jsr ShiftMapLowerForegroundBack
-    */
-  !NoShift:
-    rts
-
-  !Forward:
-    //Increment map-position
+    // Increment map-position
     lda MapPositionLowerForeground + 0
     sec
     sbc MapSpeedForeground
     sta MapPositionLowerForeground + 0
     bcs !NoShift+
-    //Shift map
-    adc #$08
+    // Shift map
+    adc #8
     sta MapPositionLowerForeground + 0
     inc MapPositionLowerForeground + 1
     ldx MapPositionLowerForeground + 1
     jsr ShiftMapLowerForeground
+
   !NoShift:
     rts
 }
@@ -359,17 +345,23 @@ ScrollLowerForeground: {
 
 * = * "ShiftMapLandscape"
 ShiftMapLandscape: {
+    lda MapPositionLandscape + 1
+    clc
+    adc #38
+    tax
+
     .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
       .for (var j=0; j<38; j++) {
-        ldy SCREEN_RAM + $28 * i + j + 1
-        sty SCREEN_RAM + $28 * i + j + 0
-        lda COLOR_MAP, y
-        sta c64lib.COLOR_RAM + $28 * i + j + 0
+        lda SCREEN_RAM + (40 * i) + j + 1
+        sta SCREEN_RAM + (40 * i) + j + 0
+        lda c64lib.COLOR_RAM + (40 * i) + j + 1
+        sta c64lib.COLOR_RAM + (40 * i) + j + 0
       }
-      ldy MAP + $100 * i, x
-      sty SCREEN_RAM + $28 * i + $26
+      lda MAP + MapWidth * i, x
+      sta SCREEN_RAM + (40 * i) + 38
+      tay
       lda COLOR_MAP, y
-      sta c64lib.COLOR_RAM + $28 * i + $26
+      sta c64lib.COLOR_RAM + (40 * i) + 38
     }
 
     rts
@@ -377,66 +369,36 @@ ShiftMapLandscape: {
 
 * = * "ShiftMapLowerForeground"
 ShiftMapLowerForeground: {
+    lda MapPositionLowerForeground + 1
+    clc
+    adc #38
+    tax
+
     .for (var i=ScreenPart3HigherRow; i < 25; i++) {
       .for (var j=0; j<38; j++) {
-        ldy SCREEN_RAM + $28 * i + j + 1
-        sty SCREEN_RAM + $28 * i + j + 0
-        lda COLOR_MAP, y
-        sta c64lib.COLOR_RAM + $28 * i + j + 0
+        ldy SCREEN_RAM + 40 * i + j + 1
+        sty SCREEN_RAM + 40 * i + j + 0
+        lda c64lib.COLOR_RAM + 40 * i + j + 1
+        sta c64lib.COLOR_RAM + 40 * i + j + 0
       }
-      ldy MAP + $100 * i, x
-      sty SCREEN_RAM + $28 * i + $26
+      lda MAP + MapWidth * i, x
+      sta SCREEN_RAM + 40 * i + $26
+      tay
       lda COLOR_MAP, y
-      sta c64lib.COLOR_RAM + $28 * i + $26
+      sta c64lib.COLOR_RAM + 40 * i + $26
     }
 
     rts
 }
 
-/*
-* = * "ShiftMapLandscapeBack"
-ShiftMapLandscapeBack: {
-    .for (var i=ScreenPart1LowerRow; i < ScreenPart2LowerRow; i++) {
-      .for (var j=37; j>=0; j--) {
-        ldy SCREEN_RAM + $28 * i + j + 0
-        sty SCREEN_RAM + $28 * i + j + 1
-        lda COLOR_MAP, y
-        sta c64lib.COLOR_RAM + $28 * i + j + 1
-      }
-      ldy MAP + $100 * i, x
-      sty SCREEN_RAM + $28 * i
-      lda COLOR_MAP, y
-      sta c64lib.COLOR_RAM + $28 * i
-    }
-    rts
-}
-
-* = * "ShiftMapLowerForegroundBack"
-ShiftMapLowerForegroundBack: {
-    .for (var i=ScreenPart3HigherRow; i < 25; i++) {
-      .for (var j=37; j>=0; j--) {
-        ldy SCREEN_RAM + $28 * i + j + 0
-        sty SCREEN_RAM + $28 * i + j + 1
-        lda COLOR_MAP, y
-        sta c64lib.COLOR_RAM + $28 * i + j + 1
-      }
-      ldy MAP + $100 * i, x
-      sty SCREEN_RAM + $28 * i
-      lda COLOR_MAP, y
-      sta c64lib.COLOR_RAM + $28 * i
-    }
-    rts
-}
-*/
-
-* = * "DrawFixedLandscape"
-DrawFixedLandscape: {
+* = * "DrawScoreRows"
+/* Draws first two rows. These are static so no scrolling is done. */
+DrawScoreRows: {
     ldx #0
   !:
     lda MAP, x
     sta SCREEN_RAM, x
-    tay
-    lda COLOR_MAP, y
+    lda #0
     sta c64lib.COLOR_RAM, x
     inx
     cpx #40
@@ -444,10 +406,9 @@ DrawFixedLandscape: {
 
     ldx #0
   !:
-    lda MAP + 256, x
+    lda MAP + MapWidth, x
     sta SCREEN_RAM + 40, x
-    tay
-    lda COLOR_MAP, y
+    lda #0
     sta c64lib.COLOR_RAM + 40, x
     inx
     cpx #40
@@ -457,10 +418,12 @@ DrawFixedLandscape: {
 }
 
 * = * "DrawFixedForeground"
+/* Draws earth line where Dino lives. This is static so no
+   scrolling is done. */
 DrawFixedForeground: {
     ldx #0
   !:
-    lda MAP + (ScreenPart3HigherRow * 256), x
+    lda MAP + (ScreenPart3HigherRow * MapWidth), x
     sta SCREEN_RAM + (ScreenPart3HigherRow * 40), x
     tay
     lda COLOR_MAP, y
@@ -472,7 +435,31 @@ DrawFixedForeground: {
     rts
 }
 
+.macro ManyNop(nopCount) {
+    .for (var i = 0; i < nopCount; i++) {
+      nop
+    }
+}
+
+.macro pushStatus() {
+    pha
+    txa
+    pha
+    tya
+    pha
+}
+
+.macro popStatus() {
+    pla
+    tay
+    pla
+    tax
+    pla
+}
+
 .label SCREEN_RAM = $4000
+
+.label MapWidth = 256
 
 MapPositionLandscape:
     .byte $07, $00  //Frac/Full
