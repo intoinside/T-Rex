@@ -37,6 +37,9 @@
     lda #0
     sta c64lib.RASTER
 
+    lda #%00000001
+    sta c64lib.IMR
+
     cli
 }
 
@@ -53,6 +56,17 @@ Background_Init: {
 
     lda #StartMapSpeedForeground
     sta MapSpeedForeground
+
+    ldx #0
+    txa
+  !:
+    sta SCREEN_RAM, x
+    sta SCREEN_RAM + $100, x
+    sta SCREEN_RAM + $200, x
+    sta SCREEN_RAM + $300, x
+    inx
+    cpx #0
+    bne !-
 
     rts
 }

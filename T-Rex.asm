@@ -24,13 +24,10 @@ Entry: {
     lda #DARK_GREY
     sta c64lib.BG_COL_2
 
-  StartGame:
-    lda #%00000001
-    sta c64lib.IMR
+  !StartGame:
+    jsr Background_Init
 
     SetupSprites()
-
-    jsr Background_Init
 
     jsr Utils.ResetScore
     jsr DrawScoreRows
@@ -40,23 +37,27 @@ Entry: {
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
 
-    IsReturnPressedAndReleased()
-
+  !CanStart:
     lda #0
     sta GameEnded
     asl c64lib.SPRITE_2S_COLLISION
 
-  !:
+  !MainLoop:
     lda c64lib.RASTER
-    bne !-
+    bne !MainLoop-
 
     lda GameEnded
-    bne WaitForGameRestart
+    beq !GameInProgress+
 
+    IsSpacePressed()
+    beq !MainLoop-
+    jmp !StartGame-
+
+  !GameInProgress:
     jsr Dino.CheckCollision
     beq !Proceed+
     jsr SetGameEnded
-    jmp !-
+    jmp !GameHandlingDone+
 
   !Proceed:
     jsr Obstacle.MoveObstacle
@@ -67,22 +68,23 @@ Entry: {
     jsr Dino.HandleJump
 
     ldx #255
-  Wait:
+  !Wait:
     dex
     ManyNop(16)
-    bne Wait
+    bne !Wait-
 
     IsReturnPressed()
-    beq !-
+    beq !MainLoop-
     jsr Dino.Jump
 
-    jmp !-
+  !GameHandlingDone:
+    jmp !MainLoop-
 
     rts
 
-  WaitForGameRestart:
-    IsSpacePressedAndReleased()
-    jmp StartGame
+  // WaitForGameRestart:
+  //   IsSpacePressedAndReleased()
+  //   jmp StartGame
 }
 
 * = * "SetGameEnded"
@@ -91,9 +93,6 @@ SetGameEnded: {
     sta GameEnded
     
     jsr Dino.SetGameEnd
-
-    lda #%00000000
-    sta c64lib.IMR
 
     rts
 }
