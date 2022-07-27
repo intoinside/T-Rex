@@ -26,6 +26,26 @@ Init: {
     rts
 }
 
+* = * "Sun.SwitchFrame"
+SwitchFrame: {
+    pha
+    lda #SPRITES_OFFSET.SUN_2
+    sta SUN_PTR
+    pla
+
+    rts
+}
+
+* = * "Sun.ResetFrame"
+ResetFrame: {
+    pha
+    lda #SPRITES_OFFSET.SUN_1
+    sta SUN_PTR
+    pla
+
+    rts
+}
+
 .label PositionX = 255
 .label PositionY = 68
 

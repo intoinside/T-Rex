@@ -34,6 +34,7 @@ ShowObstacle: {
     ora #%00001000
     sta c64lib.SPRITE_MSB_X
 
+    jsr Sun.SwitchFrame
     rts
 }
 
@@ -71,6 +72,11 @@ MoveObstacle: {
     bne !-
 
     lda c64lib.SPRITE_3_X
+    cmp #134
+    bcs !HasDone+
+    jsr Sun.ResetFrame
+
+  !HasDone:
     cmp #10
     bcs Done
     lda c64lib.SPRITE_MSB_X
