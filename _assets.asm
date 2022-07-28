@@ -35,8 +35,11 @@ SPRITES_OFFSET: {
   .label CACTUS_1 = DINO_DEAD + 1
   .label CACTUS_6 = DINO_DEAD + 6
 
-  .label SUN_1 = CACTUS_6 + 1
-  .label SUN_2 = CACTUS_6 + 2
+  .label PTERO_1 = CACTUS_6 + 1
+  .label PTERO_2 = CACTUS_6 + 2
+
+  .label SUN_1 = PTERO_2 + 1
+  .label SUN_2 = PTERO_2 + 2
 }
 
 #import "./_label.asm"
