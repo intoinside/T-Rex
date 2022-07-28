@@ -503,7 +503,6 @@ Direction:          // Actual game direction
 MapSpeedLandscape: .byte 1
 MapSpeedForeground: .byte StartMapSpeedForeground
 
-
 FrameFlag: .byte $00
 
 #import "./_label.asm"

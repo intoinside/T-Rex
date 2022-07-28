@@ -34,6 +34,7 @@ Entry: {
     jsr DrawFixedForeground
     jsr Dino.Init
     jsr Sun.Init
+    jsr Ptero.Init
     jsr Obstacle.Init
     jsr Obstacle.PrepareCactus
 
@@ -61,17 +62,21 @@ Entry: {
 
   !Proceed:
     jsr Obstacle.MoveObstacle
+    jsr Ptero.MoveIt
 
     jsr ScrollLandscape
     jsr ScrollLowerForeground
     jsr Dino.SwitchDinoFrame
     jsr Dino.HandleJump
 
+    ldy #11
+  !WaitOuter:
     ldx #255
   !Wait:
     dex
-    ManyNop(16)
     bne !Wait-
+    dey
+    bne !WaitOuter-
 
     IsReturnPressed()
     beq !MainLoop-
