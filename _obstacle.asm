@@ -91,7 +91,7 @@ MoveObstacle: {
     rts
 }
 
-.label PositionY = 196
+.label PositionY = 198
 
 .label OBSTACLE_1_PTR = SCREEN_RAM + $3f8 + 3
 

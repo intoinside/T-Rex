@@ -17,6 +17,7 @@ CIA2: {
 #import "./_dino.asm"
 #import "./_obstacle.asm"
 #import "./_sun.asm"
+#import "./_ptero.asm"
 #import "./_utils.asm"
 #import "./_assets.asm"
 #import "./chipset/lib/sprites.asm"
