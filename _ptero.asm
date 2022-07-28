@@ -10,7 +10,7 @@ Init: {
     lda #SPRITES_OFFSET.PTERO_1
     sta PTERO_PTR
 
-    lda #GREEN
+    lda #ORANGE
     sta c64lib.SPRITE_2_COLOR
 
     rts
@@ -23,7 +23,7 @@ ShowIt: {
     ora #%00000100
     sta c64lib.SPRITE_ENABLE
 
-    lda #150
+    lda #151
     sta c64lib.SPRITE_2_X
     lda c64lib.SPRITE_MSB_X
     ora #%00000100
@@ -53,8 +53,10 @@ MoveIt: {
   !MovePtero:
     ldx MapSpeedLandscape
   !:
-    dec c64lib.SPRITE_2_X
     lda c64lib.SPRITE_2_X
+    sec
+    sbc #2
+    sta c64lib.SPRITE_2_X
     cmp #255
     bne !NextIt+
     lda c64lib.SPRITE_MSB_X
@@ -64,6 +66,8 @@ MoveIt: {
   !NextIt:
     dex
     bne !-
+
+    jsr HasToSwitch
 
     lda c64lib.SPRITE_2_X
     cmp #10
@@ -78,6 +82,43 @@ MoveIt: {
 
   !Done:
     rts
+}
+
+* = * "Ptero.HasToSwitch"
+/* Detect is Ptero frame must be changed. */
+HasToSwitch: {
+    dec Waiter
+    bne !Done+
+    lda #WaitCount
+    sta Waiter
+
+  !Switch:
+    lda AnimationForwarding
+    bne !Forward+
+
+  !BackWard:
+    dec PTERO_PTR
+    lda PTERO_PTR
+    cmp #SPRITES_OFFSET.PTERO_1
+    bcs !Done+
+    inc PTERO_PTR
+    inc AnimationForwarding
+
+  !Forward:
+    inc PTERO_PTR
+    lda PTERO_PTR
+    cmp #SPRITES_OFFSET.PTERO_4 + 1
+    bcc !Done+
+    dec PTERO_PTR
+    dec AnimationForwarding
+    jmp !BackWard-
+
+  !Done:
+    rts
+
+  .label WaitCount = 5
+  Waiter: .byte WaitCount
+  AnimationForwarding: .byte 0
 }
 
 .label PositionY = 100
