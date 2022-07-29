@@ -18,7 +18,7 @@
 * = $0810 "Entry"
 Entry: {
     SetupRasterIrq(Irq0)
-    
+
     lda #BLACK
     sta c64lib.BG_COL_1
     lda #DARK_GREY
@@ -52,6 +52,7 @@ Entry: {
 
     IsSpacePressed()
     beq !MainLoop-
+    jsr Utils.CompareAndUpdateHiScore
     jmp !StartGame-
 
   !GameInProgress:
@@ -86,17 +87,13 @@ Entry: {
     jmp !MainLoop-
 
     rts
-
-  // WaitForGameRestart:
-  //   IsSpacePressedAndReleased()
-  //   jmp StartGame
 }
 
 * = * "SetGameEnded"
 SetGameEnded: {
     lda #1
     sta GameEnded
-    
+
     jsr Dino.SetGameEnd
 
     rts

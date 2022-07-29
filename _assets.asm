@@ -18,8 +18,6 @@ MAP:
 COLOR_MAP:
   .import binary "./assets/colors.bin"
 
-.label ScoreOnScreen = SCREEN_RAM + c64lib_getTextOffset(34, 1)
-
 CHAR_POSITIONS: {
   .label CHAR_0 = 48;
   .label CHAR_9 = 57;
