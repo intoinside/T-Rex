@@ -53,7 +53,7 @@ SwitchDinoFrame: {
   Done:
     rts
 
-  .label WaitCount = 15
+  .label WaitCount = 10
   Waiter: .byte WaitCount
 }
 

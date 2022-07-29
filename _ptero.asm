@@ -23,7 +23,7 @@ ShowIt: {
     ora #%00000100
     sta c64lib.SPRITE_ENABLE
 
-    lda #151
+    lda #155
     sta c64lib.SPRITE_2_X
     lda c64lib.SPRITE_MSB_X
     ora #%00000100
@@ -55,7 +55,7 @@ MoveIt: {
   !:
     lda c64lib.SPRITE_2_X
     sec
-    sbc #2
+    sbc #3  // TIP: keep attention on SPRITE_2_X value in ShowIt
     sta c64lib.SPRITE_2_X
     cmp #255
     bne !NextIt+
