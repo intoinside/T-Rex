@@ -52,7 +52,7 @@ MoveIt: {
 // Ptero already shown, move it
   !MovePtero:
     ldx MapSpeedLandscape
-  !:
+  !Loop:
     lda c64lib.SPRITE_2_X
     sec
     sbc #3  // TIP: keep attention on SPRITE_2_X value in ShowIt
@@ -65,7 +65,7 @@ MoveIt: {
 
   !NextIt:
     dex
-    bne !-
+    bne !Loop-
 
     jsr HasToSwitch
 

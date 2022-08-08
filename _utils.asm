@@ -23,7 +23,7 @@
 AddScore: {
     ldx #5
     clc
-  !:
+  !Loop:
     lda CurrentScore - 1, x
     adc Points - 1, x
     cmp #10
@@ -34,7 +34,7 @@ AddScore: {
   SaveDigit:
     sta CurrentScore - 1, x
     dex
-    bne !-
+    bne !Loop-
 
   Done:
     jsr EvaluateSpeedUp
@@ -71,10 +71,10 @@ EvaluateSpeedUp: {
 ResetScore: {
     ldx #5
     lda #0
-  !:
+  !Loop:
     sta CurrentScore, x
     dex
-    bne !-
+    bne !Loop-
 
     jmp DrawScore   // jsr + rts
 }
@@ -85,76 +85,77 @@ CompareAndUpdateHiScore: {
     lda HiScoreLabel
     cmp ScoreOnScreen
     // If HiScore-digit-1 lower than Score-digit-1, update HiScore
-    bcc UpdateHiScore1
+    bcc !UpdateHiScore1+
     // If HiScore-digit-1 notlower notequal Score-digit-1, exit
     bne !Exit+
     // If HiScore-digit-1 equal Score-digit-1, continue check
 
     lda HiScoreLabel + 1
     cmp ScoreOnScreen + 1
-    bcc UpdateHiScore2
+    bcc !UpdateHiScore2+
     bne !Exit+
 
     lda HiScoreLabel + 2
     cmp ScoreOnScreen + 2
-    bcc UpdateHiScore3
+    bcc !UpdateHiScore3+
     bne !Exit+
 
     lda HiScoreLabel + 3
     cmp ScoreOnScreen + 3
-    bcc UpdateHiScore4
+    bcc !UpdateHiScore4+
     bne !Exit+
 
     lda HiScoreLabel + 4
     cmp ScoreOnScreen + 4
-    bcc UpdateHiScore5
+    bcc !UpdateHiScore5+
     jmp !Exit+
 
-  UpdateHiScore1:
+  !UpdateHiScore1:
     lda ScoreOnScreen
     sta HiScoreLabel
-  UpdateHiScore2:
+  !UpdateHiScore2:
     lda ScoreOnScreen + 1
     sta HiScoreLabel + 1
-  UpdateHiScore3:
+  !UpdateHiScore3:
     lda ScoreOnScreen + 2
     sta HiScoreLabel + 2
-  UpdateHiScore4:
+  !UpdateHiScore4:
     lda ScoreOnScreen + 3
     sta HiScoreLabel + 3
-  UpdateHiScore5:
+  !UpdateHiScore5:
     lda ScoreOnScreen + 4
     sta HiScoreLabel + 4
 
   !Exit:
     rts
 }
+
 * = * "Utils.DrawScore"
 DrawScore: {
   // Append current score on score label
     ldx #0
     clc
-  !:
+  !Loop:
     lda CurrentScore, x
     adc #CHAR_POSITIONS.CHAR_0
     sta ScoreOnScreen, x
     inx
     cpx #$05
-    bne !-
+    bne !Loop-
 
     rts
 }
 
 * = * "Utils.GetRandom"
 GetRandom: {
-  Loop:
+  !Loop:
     lda c64lib.RASTER
     eor $dc04
     sbc $dc05
     cmp GeneratorMax
-    bcs Loop
+    bcs !Loop-
     cmp GeneratorMin
-    bcc Loop
+    bcc !Loop-
 
     rts
 

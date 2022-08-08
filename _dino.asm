@@ -29,28 +29,28 @@ Init: {
 * = * "Dino.SwitchDinoFrame"
 SwitchDinoFrame: {
     dec Waiter
-    bne Done
+    bne !Done+
     lda #WaitCount
     sta Waiter
 
     AddPoints(0, 1)
 
     lda IsJumping
-    bne Done
+    bne !Done+
 
     lda DINO_PTR
     cmp #SPRITES_OFFSET.DINO_1
-    beq SwitchTo2
+    beq !SwitchTo2+
     lda #SPRITES_OFFSET.DINO_1
-    jmp Change
+    jmp !Change+
 
-  SwitchTo2:
+  !SwitchTo2:
     lda #SPRITES_OFFSET.DINO_2
 
-  Change:
+  !Change:
     sta DINO_PTR
 
-  Done:
+  !Done:
     rts
 
   .label WaitCount = 10
@@ -60,7 +60,7 @@ SwitchDinoFrame: {
 * = * "Dino.Jump"
 Jump: {
     lda IsJumping
-    bne Done
+    bne !Done+
 
     inc IsJumping
 
@@ -70,31 +70,31 @@ Jump: {
     lda #SPRITES_OFFSET.DINO_JMP
     sta DINO_PTR
 
-  Done:
+  !Done:
     rts
 }
 
 * = * "Dino.HandleJump"
 HandleJump: {
     lda IsJumping
-    beq Done
+    beq !Done+
 
     ldx CurrentXFrame
     cpx #TotalJumpFrame
-    beq ResetJump
+    beq !ResetJump+
 
     lda JumpMap,x
     sta c64lib.SPRITE_1_Y
     inc CurrentXFrame
-    jmp Done
+    jmp !Done+
 
-  ResetJump:
+  !ResetJump:
     lda #0
     sta IsJumping
     lda #SPRITES_OFFSET.DINO_1
     sta DINO_PTR
 
-  Done:
+  !Done:
     rts
 
   CurrentXFrame: .byte 0

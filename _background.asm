@@ -423,24 +423,24 @@ ShiftMapLowerForeground: {
 /* Draws first two rows. These are static so no scrolling is done. */
 DrawScoreRows: {
     ldx #0
-  !:
+  !Loop1:
     lda MAP, x
     sta SCREEN_RAM, x
     lda #0
     sta c64lib.COLOR_RAM, x
     inx
     cpx #40
-    bne !-
+    bne !Loop1-
 
     ldx #0
-  !:
+  !Loop2:
     lda MAP + MapWidth, x
     sta SCREEN_RAM + 40, x
     lda #0
     sta c64lib.COLOR_RAM + 40, x
     inx
     cpx #40
-    bne !-
+    bne !Loop2-
 
     rts
 }
@@ -450,7 +450,7 @@ DrawScoreRows: {
    scrolling is done. */
 DrawFixedForeground: {
     ldx #0
-  !:
+  !Loop:
     lda MAP + (ScreenPart3HigherRow * MapWidth), x
     sta SCREEN_RAM + (ScreenPart3HigherRow * 40), x
     tay
@@ -458,7 +458,7 @@ DrawFixedForeground: {
     sta c64lib.COLOR_RAM + (ScreenPart3HigherRow * 40), x
     inx
     cpx #40
-    bne !-
+    bne !Loop-
 
     rts
 }
