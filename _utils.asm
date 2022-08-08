@@ -37,9 +37,34 @@ AddScore: {
     bne !-
 
   Done:
+    jsr EvaluateSpeedUp
     jmp DrawScore   // jsr + rts
 
   Points: .byte $00, $00, $00, $00, $00
+}
+
+* = * "Utils.EvaluateSpeedUp"
+EvaluateSpeedUp: {
+    lda CurrentScore + 2  // 100 pts
+    cmp #1
+    bne !SecondSpeedUp+
+    lda MapSpeedForeground
+    cmp #3
+    beq !Done+
+    inc MapSpeedForeground
+    jmp !Done+
+
+  !SecondSpeedUp:
+    lda CurrentScore + 2  // 200 pts
+    cmp #2
+    bcc !Done+
+    lda MapSpeedForeground
+    cmp #4
+    beq !Done+
+    inc MapSpeedForeground
+
+  !Done:
+    rts
 }
 
 * = * "Utils.ResetScore"
