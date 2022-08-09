@@ -449,17 +449,18 @@ DrawScoreRows: {
 /* Draws earth line where Dino lives. This is static so no
    scrolling is done. */
 DrawFixedForeground: {
+  .for (var row = 0; row < 5; row++) {
     ldx #0
   !Loop:
-    lda MAP + (ScreenPart3HigherRow * MapWidth), x
-    sta SCREEN_RAM + (ScreenPart3HigherRow * 40), x
+    lda MAP + ((ScreenPart3HigherRow + row) * MapWidth), x
+    sta SCREEN_RAM + ((ScreenPart3HigherRow + row) * 40), x
     tay
     lda COLOR_MAP, y
-    sta c64lib.COLOR_RAM + (ScreenPart3HigherRow * 40), x
+    sta c64lib.COLOR_RAM + ((ScreenPart3HigherRow + row) * 40), x
     inx
     cpx #40
     bne !Loop-
-
+  }
     rts
 }
 

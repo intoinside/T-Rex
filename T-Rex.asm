@@ -32,7 +32,7 @@
 Entry: {
     SetupRasterIrq(Irq0)
 
-    lda #BLACK
+    lda #RED
     sta c64lib.BG_COL_1
     lda #DARK_GREY
     sta c64lib.BG_COL_2
