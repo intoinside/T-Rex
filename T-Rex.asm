@@ -9,8 +9,21 @@
   [name="--- INTORCIA ---", type="rel"],
   [name="-- @GMAIL.COM --", type="rel"],
   [name="----------------", type="rel"],
+  [name="          neeeem", type="rel"],
+  [name="          tq   y", type="rel"],
+  [name="          t    y", type="rel"],
+  [name="  t       t  rrn", type="rel"],
+  [name="  m      n   t  ", type="rel"],
+  [name="  tm     t   t  ", type="rel"],
+  [name="  t mrrrn    +ci", type="rel"],
+  [name="  m          +i ", type="rel"],
+  [name="   m        n   ", type="rel"],
+  [name="    m     rn    ", type="rel"],
+  [name="     rtrtn      ", type="rel"],
+  [name="      t t       ", type="rel"],
+  [name="      l l       ", type="rel"],
+  [name="----------------", type="rel"],
   [name="T-REX", type="prg", segments="Code, Assets", modify="BasicUpstart", _start=$0810],
-  [name="----------------", type="rel"]
 }
 
 .segment Code
