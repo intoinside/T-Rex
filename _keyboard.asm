@@ -51,13 +51,13 @@ Init: {
 DetectKeyPressed: {
     sei
     lda #%11111111
-    sta CIA1.PORT_A_DIRECTION
+    sta c64lib.CIA1_DATA_DIR_A
     lda #%00000000
-    sta CIA1.PORT_B_DIRECTION
+    sta c64lib.CIA1_DATA_DIR_B
 
     lda MaskOnPortA
-    sta CIA1.PORT_A
-    lda CIA1.PORT_B
+    sta c64lib.CIA1_DATA_PORT_A
+    lda c64lib.CIA1_DATA_PORT_B
     and MaskOnPortB
     beq Pressed
     lda #$00
