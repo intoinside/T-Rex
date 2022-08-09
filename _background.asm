@@ -74,8 +74,7 @@ Background_Init: {
 Irq0: { // 0
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     lda #LIGHT_GRAY
     sta c64lib.BORDER_COL
@@ -102,8 +101,7 @@ Irq0: { // 0
 Irq1: { // 52
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     ManyNop(16)
 
@@ -126,8 +124,7 @@ Irq1: { // 52
 Irq2: { // 54
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     ManyNop(18)
 
@@ -150,8 +147,7 @@ Irq2: { // 54
 Irq3: { // 56
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     ManyNop(20)
 
@@ -174,8 +170,7 @@ Irq3: { // 56
 Irq4: { // 59
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     ManyNop(30)
 
@@ -198,8 +193,7 @@ Irq4: { // 59
 Irq5: { // 61
     pushStatus()
 
-    lda #$ff
-    sta c64lib.IRR
+    asl c64lib.IRR
 
     ManyNop(8)
 
@@ -224,8 +218,10 @@ Irq5: { // 61
 RasterLandscapeStart: { // 66
     pushStatus()
 
+#if DEBUG
     lda #YELLOW
     sta $d020
+#endif
 
     // Landscape
     lda MapPositionLandscape + 0
@@ -251,10 +247,11 @@ RasterLandscapeStart: { // 66
 RasterForegroundStart: {  // 144
     pushStatus()
 
+#if DEBUG
     lda #LIGHT_RED
     sta $d020
+#endif
 
-    // Foreground
     nop
     nop
     nop
@@ -266,10 +263,6 @@ RasterForegroundStart: {  // 144
     nop
     nop
     nop
-
-    // lda MapPositionBottom + 0
-    // ora #%00010000
-    // sta c64lib.CONTROL_2
 
     lda #%00010000
     sta c64lib.CONTROL_2
@@ -293,7 +286,6 @@ RasterForegroundStart: {  // 144
 RasterLowerForegroundStart: {
     pushStatus()
 
-    // Foreground
     nop
     nop
     nop
@@ -329,6 +321,11 @@ ScrollLandscape: {
     lda Direction
     beq !NoShift+
 
+    lda ShouldScroll
+    eor #$ff
+    sta ShouldScroll
+    bne !NoShift+
+
     // Increment map-position
     lda MapPositionLandscape + 0
     sec
@@ -344,6 +341,8 @@ ScrollLandscape: {
 
   !NoShift:
     rts
+
+  ShouldScroll: .byte 0
 }
 
 ScrollLowerForeground: {

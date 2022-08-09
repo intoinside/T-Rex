@@ -40,7 +40,7 @@ MoveIt: {
     bne !MovePtero+
 
 // Ptero is hidden, check if should be created
-    GetRandomNumberInRange(1, 255)
+    GetRandomNumberFromMinimum(1)
     cmp #254
     bcs CreatePtero
     jmp !Done+

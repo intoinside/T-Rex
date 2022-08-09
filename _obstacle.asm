@@ -10,13 +10,29 @@ Init: {
     rts
 }
 
-* = * "Obstacle.PrepareCactus"
-PrepareCactus: {
-    lda #GREEN
-    sta c64lib.SPRITE_3_COLOR
-
-    lda #SPRITES_OFFSET.CACTUS_1
+* = * "Obstacle.PrepareOstacle"
+PrepareOstacle: {
+    GetRandomNumberInRange(0, (SPRITES_OFFSET.ROCK_2 - SPRITES_OFFSET.CACTUS_1))
+    clc
+    adc #SPRITES_OFFSET.CACTUS_1
     sta OBSTACLE_1_PTR
+#if DEBUG
+    LIBSCREEN_DEBUG8BIT_VVA(8, 1, OBSTACLE_1_PTR)
+#endif
+
+    lda OBSTACLE_1_PTR
+    cmp #SPRITES_OFFSET.ROCK_1
+    bcc !SetGreen+
+
+  !SetGray:
+    lda #LIGHT_GRAY
+    jmp !Done+
+
+  !SetGreen:
+    lda #GREEN
+
+  !Done:
+    sta c64lib.SPRITE_3_COLOR
 
     rts
 }
@@ -45,13 +61,16 @@ MoveObstacle: {
     and #%00001000
     bne MoveIt
 
+  DontMoveIt:  
 // Obstacle is hidden, check if should be created
-    GetRandomNumberInRange(1, 255)
-    cmp #253
+    GetRandomNumberFromMinimum(1)
+    cmp #250
     bcs CreateObstacle
     jmp Done
 
   CreateObstacle:
+    jsr Obstacle.PrepareOstacle
+
     jsr Obstacle.ShowObstacle
     jmp Done
 

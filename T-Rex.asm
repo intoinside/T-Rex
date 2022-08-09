@@ -1,6 +1,6 @@
 
 .segmentdef Code [start=$0810]
-.segmentdef Assets [start=$6000]
+.segmentdef Assets [start=$5000]
 
 .file [name="./T-Rex.prg", segments="Code, Assets", modify="BasicUpstart", _start=$0810]
 .disk [filename="./T-Rex.d64", name="T-REX", id="C2022", showInfo]
@@ -49,7 +49,6 @@ Entry: {
     jsr Sun.Init
     jsr Ptero.Init
     jsr Obstacle.Init
-    jsr Obstacle.PrepareCactus
 
   !CanStart:
     lda #0
@@ -83,7 +82,7 @@ Entry: {
     jsr Dino.SwitchDinoFrame
     jsr Dino.HandleJump
 
-    ldy #11
+    ldy #14
   !WaitOuter:
     ldx #255
   !Wait:
