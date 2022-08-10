@@ -28,7 +28,10 @@ SPRITES_OFFSET: {
   .label DINO_1 = FIRST_SPRITE_PTR
   .label DINO_2 = FIRST_SPRITE_PTR + 1
   .label DINO_JMP = FIRST_SPRITE_PTR + 2
-  .label DINO_DEAD = FIRST_SPRITE_PTR + 3
+  .label DINO_FAST_1 = FIRST_SPRITE_PTR + 3
+  .label DINO_FAST_2 = FIRST_SPRITE_PTR + 4
+  .label DINO_FAST_JMP = FIRST_SPRITE_PTR + 5
+  .label DINO_DEAD = FIRST_SPRITE_PTR + 6
 
   .label PTERO_1 = DINO_DEAD + 1
   .label PTERO_2 = DINO_DEAD + 2
@@ -48,11 +51,14 @@ SPRITES_OFFSET: {
   .label ROCK_1 = CACTUS_6 + 1
   .label ROCK_2 = CACTUS_6 + 2
 
+  .label MUSHROOM = ROCK_2 + 1
+
   .print "FIRST_SPRITE_PTR="+FIRST_SPRITE_PTR
   .print "PTERO_1="+PTERO_1
   .print "SUN_1="+SUN_1
   .print "CACTUS_1="+CACTUS_1
   .print "ROCK_1="+ROCK_1
+  .print "MUSHROOM="+MUSHROOM
 }
 
 #import "./_label.asm"
