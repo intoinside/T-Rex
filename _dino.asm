@@ -17,6 +17,7 @@ Init: {
 
     lda #0
     sta IsJumping
+    sta IsDoped
     sta HandleJump.CurrentXFrame
 
     lda c64lib.SPRITE_ENABLE
@@ -38,6 +39,9 @@ SwitchDinoFrame: {
     lda IsJumping
     bne !Done+
 
+    lda IsDoped
+    bne !Doped+
+
     lda DINO_PTR
     cmp #SPRITES_OFFSET.DINO_1
     beq !SwitchTo2+
@@ -46,6 +50,17 @@ SwitchDinoFrame: {
 
   !SwitchTo2:
     lda #SPRITES_OFFSET.DINO_2
+    jmp !Change+
+
+  !Doped:
+    lda DINO_PTR
+    cmp #SPRITES_OFFSET.DINO_FAST_1
+    beq !SwitchTo2+
+    lda #SPRITES_OFFSET.DINO_FAST_1
+    jmp !Change+
+
+  !SwitchTo2:
+    lda #SPRITES_OFFSET.DINO_FAST_2
 
   !Change:
     sta DINO_PTR
@@ -67,7 +82,16 @@ Jump: {
     lda #0
     sta HandleJump.CurrentXFrame
 
+    lda IsDoped
+    bne !Doped+
+
     lda #SPRITES_OFFSET.DINO_JMP
+    jmp !Change+
+
+  !Doped:
+    lda #SPRITES_OFFSET.DINO_FAST_JMP
+
+  !Change:
     sta DINO_PTR
 
   !Done:
@@ -120,6 +144,7 @@ SetGameEnd: {
 }
 
 IsJumping: .byte 0
+IsDoped: .byte 0
 
 .label TotalJumpFrame = 38
 JumpMap:
