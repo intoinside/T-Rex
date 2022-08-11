@@ -6,6 +6,7 @@
 Init: {
     lda #PositionY
     sta c64lib.SPRITE_3_Y
+    sta c64lib.SPRITE_5_Y
 
     rts
 }
@@ -37,6 +38,17 @@ PrepareOstacle: {
     rts
 }
 
+* = * "Obstacle.PrepareMushroom"
+PrepareMushroom: {
+    lda #SPRITES_OFFSET.MUSHROOM
+    sta MUSHROOM_PTR
+
+    lda #LIGHT_RED
+    sta c64lib.SPRITE_5_COLOR
+
+    rts
+}
+
 * = * "Obstacle.ShowObstacle"
 /* Show the obstacle */
 ShowObstacle: {
@@ -51,6 +63,22 @@ ShowObstacle: {
     sta c64lib.SPRITE_MSB_X
 
     jsr Sun.SwitchFrame
+    rts
+}
+
+* = * "Obstacle.ShowMushroom"
+/* Show the mushroom */
+ShowMushroom: {
+    lda c64lib.SPRITE_ENABLE
+    ora #%00100000
+    sta c64lib.SPRITE_ENABLE
+
+    lda #180
+    sta c64lib.SPRITE_5_X
+    lda c64lib.SPRITE_MSB_X
+    ora #%00100000
+    sta c64lib.SPRITE_MSB_X
+
     rts
 }
 
@@ -70,8 +98,10 @@ MoveObstacle: {
 
   CreateObstacle:
     jsr Obstacle.PrepareOstacle
+    jsr Obstacle.PrepareMushroom
 
     jsr Obstacle.ShowObstacle
+    jsr Obstacle.ShowMushroom
     jmp Done
 
 // Obstacle already shown, move it
@@ -110,8 +140,51 @@ MoveObstacle: {
     rts
 }
 
+* = * "Obstacle.MoveMushroom"
+/* Moves the mushroom according to foreground speed */
+MoveMushroom: {
+    lda c64lib.SPRITE_ENABLE
+    and #%00100000
+    bne MoveIt
+
+// Mushroom already shown, move it
+  MoveIt:
+    ldx MapSpeedForeground
+  !:
+    dec c64lib.SPRITE_5_X
+    lda c64lib.SPRITE_5_X
+    cmp #255
+    bne NextIt
+    lda c64lib.SPRITE_MSB_X
+    and #%11011111
+    sta c64lib.SPRITE_MSB_X
+
+  NextIt:
+    dex
+    bne !-
+
+    lda c64lib.SPRITE_5_X
+    cmp #134
+    bcs !HasDone+
+
+  !HasDone:
+    cmp #10
+    bcs !Done+
+    lda c64lib.SPRITE_MSB_X
+    and #%00100000
+    bne !Done+
+
+    lda c64lib.SPRITE_ENABLE
+    and #%11011111
+    sta c64lib.SPRITE_ENABLE
+
+  !Done:
+    rts
+}
+
 .label PositionY = 198
 
 .label OBSTACLE_1_PTR = SCREEN_RAM + $3f8 + 3
+.label MUSHROOM_PTR = SCREEN_RAM + $3f8 + 5
 
 #import "./_label.asm"

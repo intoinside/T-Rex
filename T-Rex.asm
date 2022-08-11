@@ -79,6 +79,7 @@ Entry: {
 
   !Proceed:
     jsr Obstacle.MoveObstacle
+    jsr Obstacle.MoveMushroom
     jsr Ptero.MoveIt
 
     jsr ScrollLandscape
