@@ -7,7 +7,8 @@ Sprite recap:
 #2 - Pterodactyl
 #3 - Obstacle1
 #4 - Obstacle2
-
+#5 - Mushroom
+#6 - 
 #7 - Sun
 
 */
@@ -18,8 +19,8 @@ Sprite recap:
 
     lda #0
     sta c64lib.SPRITE_MSB_X
-    lda c64lib.SPRITE_EXPAND_X
-    lda c64lib.SPRITE_EXPAND_Y
+    sta c64lib.SPRITE_EXPAND_X
+    sta c64lib.SPRITE_EXPAND_Y
     sta c64lib.SPRITE_ENABLE
 
     lda #BLACK
