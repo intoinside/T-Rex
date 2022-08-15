@@ -82,6 +82,16 @@ ShowMushroom: {
     rts
 }
 
+* = * "Obstacle.HideMushroom"
+/* Hide the mushroom */
+HideMushroom: {
+    lda c64lib.SPRITE_ENABLE
+    and #%11011111
+    sta c64lib.SPRITE_ENABLE
+
+    rts
+}
+
 * = * "Obstacle.MoveObstacle"
 /* Moves the obstacle according to foreground speed */
 MoveObstacle: {

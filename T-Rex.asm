@@ -53,11 +53,12 @@ Entry: {
   !CanStart:
     lda #0
     sta GameEnded
-    asl c64lib.SPRITE_2S_COLLISION
 
   !MainLoop:
     lda c64lib.RASTER
     bne !MainLoop-
+
+    GrabCollisionStatus()
 
     lda GameEnded
     beq !GameInProgress+
@@ -75,7 +76,9 @@ Entry: {
 
   !MushroomEatenCheck:
     jsr Dino.CheckMushroomEaten
-    beq !Proceed+    
+    bne !Proceed+    
+
+    jsr Obstacle.HideMushroom
 
   !Proceed:
     jsr Obstacle.MoveObstacle
@@ -116,6 +119,16 @@ SetGameEnded: {
     rts
 }
 
+.macro GrabCollisionStatus() {
+    lda c64lib.SPRITE_2S_COLLISION  
+    sta Sprite2SpriteCollision
+    lda c64lib.SPRITE_2B_COLLISION  
+    sta Sprite2BackCollision
+}
+
 GameEnded: .byte 0
+
+Sprite2BackCollision: .byte 0
+Sprite2SpriteCollision: .byte 0
 
 #import "./_label.asm"

@@ -127,7 +127,7 @@ HandleJump: {
 * = * "Dino.CheckCollision"
 CheckCollision: {
     lda #%00001010
-    and c64lib.SPRITE_2S_COLLISION
+    and Sprite2SpriteCollision
     cmp #%00001010
 
     rts
@@ -136,7 +136,7 @@ CheckCollision: {
 * = * "Dino.CheckMushroomEaten"
 CheckMushroomEaten: {
     lda #%00100010
-    and c64lib.SPRITE_2S_COLLISION
+    and Sprite2SpriteCollision
     cmp #%00100010
 
     rts
