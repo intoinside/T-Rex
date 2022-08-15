@@ -69,6 +69,9 @@ ShowObstacle: {
 * = * "Obstacle.ShowMushroom"
 /* Show the mushroom */
 ShowMushroom: {
+    lda Dino.IsDoped
+    bne !Done+
+
     lda c64lib.SPRITE_ENABLE
     ora #%00100000
     sta c64lib.SPRITE_ENABLE
@@ -79,6 +82,7 @@ ShowMushroom: {
     ora #%00100000
     sta c64lib.SPRITE_MSB_X
 
+  !Done:
     rts
 }
 

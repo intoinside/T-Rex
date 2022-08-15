@@ -72,6 +72,32 @@ SwitchDinoFrame: {
   Waiter: .byte WaitCount
 }
 
+* = * "Dino.SetDinoDoped"
+SetDinoDoped: {
+    lda #1
+    sta IsDoped
+
+    lda #RED
+    sta c64lib.SPRITE_1_COLOR
+
+    inc MapSpeedForeground
+
+    rts
+}
+
+* = * "Dino.SetDinoUndoped"
+SetDinoUndoped: {
+    lda #0
+    sta IsDoped
+
+    lda #GREEN
+    sta c64lib.SPRITE_1_COLOR
+
+    dec MapSpeedForeground
+
+    rts
+}
+
 * = * "Dino.Jump"
 Jump: {
     lda IsJumping
@@ -139,6 +165,21 @@ CheckMushroomEaten: {
     and Sprite2SpriteCollision
     cmp #%00100010
 
+    rts
+}
+
+* = * "Dino.HandleDopedStatus"
+HandleDopedStatus: {
+    lda IsDoped
+    bne !Doped+
+
+    lda #0
+    jmp !Done+
+
+  !Doped:
+    lda #1
+
+  !Done:
     rts
 }
 

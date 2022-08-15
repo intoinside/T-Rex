@@ -71,6 +71,8 @@ Entry: {
   !GameInProgress:
     jsr Dino.CheckCollision
     bne !MushroomEatenCheck+
+    jsr Dino.HandleDopedStatus
+    bne !MushroomEatenCheck+
     jsr SetGameEnded
     jmp !GameHandlingDone+
 
@@ -79,6 +81,7 @@ Entry: {
     bne !Proceed+    
 
     jsr Obstacle.HideMushroom
+    jsr Dino.SetDinoDoped
 
   !Proceed:
     jsr Obstacle.MoveObstacle
