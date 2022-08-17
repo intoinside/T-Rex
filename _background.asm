@@ -76,6 +76,12 @@ Irq0: { // 0
 
     asl c64lib.IRR
 
+    lda Dino.IsDoped
+    beq !NoDoped+
+
+    jsr Dino.HandleSpeedRunText
+
+  !NoDoped:
     lda #LIGHT_GRAY
     sta c64lib.BORDER_COL
     sta c64lib.BG_COL_0

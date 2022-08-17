@@ -82,6 +82,14 @@ SetDinoDoped: {
 
     inc MapSpeedForeground
 
+    ldx #0
+  !WriteTxt:
+    lda SpeedRunText, x
+    sta SpeedRunLabel, x
+    inx
+    cpx #12
+    bne !WriteTxt-
+
     rts
 }
 
@@ -95,7 +103,46 @@ SetDinoUndoped: {
 
     dec MapSpeedForeground
 
+    ldx #$00
+    lda #0
+  !WriteTxt:
+    sta SpeedRunLabel, x
+    inx
+    cpx #12
+    bne !WriteTxt-
+
     rts
+}
+
+* = * "Dino.HandleSpeedRunText"
+HandleSpeedRunText: {
+    ldy #13
+    ldx Offset
+    lda Colours, x
+  !Loop:
+    sta SpeedRunColorsLabel - 1, y
+    dey
+    bne !Loop-
+
+    inc Offset
+    lda Offset
+    cmp #40
+    bne !Done+
+    lda #0
+    sta Offset
+
+  !Done:
+    rts
+
+  Colours: .byte $09,$09,$02,$02,$08
+           .byte $08,$0a,$0a,$0f,$0f
+           .byte $07,$07,$01,$01,$01
+           .byte $01,$01,$01,$01,$01
+           .byte $01,$01,$01,$01,$01
+           .byte $01,$01,$01,$07,$07
+           .byte $0f,$0f,$0a,$0a,$08
+           .byte $08,$02,$02,$09,$09
+  Offset: .byte 0
 }
 
 * = * "Dino.Jump"
@@ -200,6 +247,10 @@ IsDoped: .byte 0
 .label TotalJumpFrame = 38
 JumpMap:
 .fill TotalJumpFrame, round(PositionY - 45*sin(toRadians(360*i/((TotalJumpFrame - 1) * 2))))
+
+.label SpeedRunLabel = SCREEN_RAM + c64lib_getTextOffset(1, 0)
+.label SpeedRunColorsLabel = c64lib.COLOR_RAM + c64lib_getTextOffset(1, 0)
+SpeedRunText: .text "speed run!!!"
 
 .label PositionX = 55
 .label PositionY = 196
