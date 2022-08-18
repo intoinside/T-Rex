@@ -90,6 +90,8 @@ SetDinoDoped: {
     cpx #12
     bne !WriteTxt-
 
+    CalculatePoints(0, 5, 0)
+
     rts
 }
 
@@ -103,8 +105,8 @@ SetDinoUndoped: {
 
     dec MapSpeedForeground
 
-    ldx #$00
-    lda #0
+    ldx #0
+    txa
   !WriteTxt:
     sta SpeedRunLabel, x
     inx
@@ -132,6 +134,12 @@ HandleSpeedRunText: {
     sta Offset
 
   !Done:
+    jsr HasCalculatedScoreReached
+    beq !Exit+
+
+    jsr SetDinoUndoped
+
+  !Exit:
     rts
 
   Colours: .byte $09,$09,$02,$02,$08
@@ -143,6 +151,43 @@ HandleSpeedRunText: {
            .byte $0f,$0f,$0a,$0a,$08
            .byte $08,$02,$02,$09,$09
   Offset: .byte 0
+}
+
+* = * "Dino.HasCalculatedScoreReached"
+HasCalculatedScoreReached: {
+    lda Utils.CalculateScore.CalculatedScore
+    cmp Utils.CurrentScore
+    bcc !NotReached+
+    bne !Reached+
+
+    lda Utils.CalculateScore.CalculatedScore + 1
+    cmp Utils.CurrentScore + 1
+    bcc !NotReached+
+    bne !Reached+
+
+    lda Utils.CalculateScore.CalculatedScore + 2
+    cmp Utils.CurrentScore + 2
+    bcc !NotReached+
+    bne !Reached+
+
+    lda Utils.CalculateScore.CalculatedScore + 3
+    cmp Utils.CurrentScore + 3
+    bcc !NotReached+
+    bne !Reached+
+
+    lda Utils.CalculateScore.CalculatedScore + 4
+    cmp Utils.CurrentScore + 4
+    bcc !NotReached+
+
+  !Reached:
+    lda #0
+    jmp !Done+
+
+  !NotReached:
+    lda #1
+
+  !Done:
+    rts
 }
 
 * = * "Dino.Jump"

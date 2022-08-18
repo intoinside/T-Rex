@@ -17,11 +17,11 @@ PrepareOstacle: {
     clc
     adc #SPRITES_OFFSET.CACTUS_1
     sta OBSTACLE_1_PTR
+
 #if DEBUG
     LIBSCREEN_DEBUG8BIT_VVA(8, 1, OBSTACLE_1_PTR)
-#endif
-
     lda OBSTACLE_1_PTR
+#endif
     cmp #SPRITES_OFFSET.ROCK_1
     bcc !SetGreen+
 

@@ -80,6 +80,17 @@
     jsr Utils.AddScore
 }
 
+.macro CalculatePoints(digit3, digit2, digit1) {
+    lda #digit1
+    sta Utils.CalculateScore.Points + 4
+    lda #digit2
+    sta Utils.CalculateScore.Points + 3
+    lda #digit3
+    sta Utils.CalculateScore.Points + 2
+
+    jsr Utils.CalculateScore
+}
+
 /* Generates a random number up to 254. */
 .macro GetRandomNumberFromMinimum(minNumber) {
     lda #minNumber
@@ -109,20 +120,42 @@ AddScore: {
     lda CurrentScore - 1, x
     adc Points - 1, x
     cmp #10
-    bcc SaveDigit
+    bcc !SaveDigit+
     sbc #10
     sec
 
-  SaveDigit:
+  !SaveDigit:
     sta CurrentScore - 1, x
     dex
     bne !Loop-
 
-  Done:
     jsr EvaluateSpeedUp
     jmp DrawScore   // jsr + rts
 
   Points: .byte $00, $00, $00, $00, $00
+}
+
+* = * "Utils.CalculateScore"
+CalculateScore: {
+    ldx #5
+    clc
+  !Loop:
+    lda CurrentScore - 1, x
+    adc Points - 1, x
+    cmp #10
+    bcc !SaveDigit+
+    sbc #10
+    sec
+
+  !SaveDigit:
+    sta CalculatedScore - 1, x
+    dex
+    bne !Loop-
+
+    rts
+
+  Points: .byte 0, 0, 0, 0, 0
+  CalculatedScore: .byte 0, 0, 0, 0, 0
 }
 
 * = * "Utils.EvaluateSpeedUp"
