@@ -72,7 +72,7 @@ Background_Init: {
 }
 
 Irq0: { // 0
-    pushStatus()
+    pushStatus(1, 1, 1)
 
     asl c64lib.IRR
 
@@ -99,13 +99,13 @@ Irq0: { // 0
     and #%11101000
     sta c64lib.CONTROL_2
 
-    popStatus()
+    popStatus(1, 1, 1)
 
     rti
 }
 
 Irq1: { // 52
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     asl c64lib.IRR
 
@@ -122,13 +122,13 @@ Irq1: { // 52
     lda #54
     sta c64lib.RASTER
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
 
 Irq2: { // 54
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     asl c64lib.IRR
 
@@ -145,13 +145,13 @@ Irq2: { // 54
     lda #56
     sta c64lib.RASTER
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
 
 Irq3: { // 56
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     asl c64lib.IRR
 
@@ -168,13 +168,13 @@ Irq3: { // 56
     lda #59
     sta c64lib.RASTER
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
 
 Irq4: { // 59
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     asl c64lib.IRR
 
@@ -191,13 +191,13 @@ Irq4: { // 59
     lda #61
     sta c64lib.RASTER
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
 
 Irq5: { // 61
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     asl c64lib.IRR
 
@@ -214,7 +214,7 @@ Irq5: { // 61
     lda #66
     sta c64lib.RASTER
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
@@ -222,7 +222,7 @@ Irq5: { // 61
 * = * "RasterLandscapeStart"
 /* Raster line for landscape */
 RasterLandscapeStart: { // 66
-    pushStatus()
+    pushStatus(1, 0, 0)
 
 #if DEBUG
     lda #YELLOW
@@ -243,7 +243,7 @@ RasterLandscapeStart: { // 66
 
     asl c64lib.IRR               // Interrupt status register
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
@@ -251,7 +251,7 @@ RasterLandscapeStart: { // 66
 * = * "RasterForegroundStart"
 /* Raster line for foreground */
 RasterForegroundStart: {  // 144
-    pushStatus()
+    pushStatus(1, 0, 0)
 
 #if DEBUG
     lda #LIGHT_RED
@@ -282,7 +282,7 @@ RasterForegroundStart: {  // 144
 
     asl c64lib.IRR
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
@@ -290,7 +290,7 @@ RasterForegroundStart: {  // 144
 * = * "RasterLowerForegroundStart"
 /* Raster line for lower foreground */
 RasterLowerForegroundStart: {
-    pushStatus()
+    pushStatus(1, 0, 0)
 
     nop
     nop
@@ -317,7 +317,7 @@ RasterLowerForegroundStart: {
 
     asl c64lib.IRR
 
-    popStatus()
+    popStatus(1, 0, 0)
 
     rti
 }
@@ -475,20 +475,32 @@ DrawFixedForeground: {
     }
 }
 
-.macro pushStatus() {
+.macro pushStatus(a, x, y) {
+  .if (a==1) {  
     pha
+  }
+  .if (x==1) {  
     txa
     pha
+  }
+  .if (y==1) {  
     tya
     pha
+  }
 }
 
-.macro popStatus() {
+.macro popStatus(a, x, y) {
+  .if (y==1) {  
     pla
     tay
+  }
+  .if (x==1) {  
     pla
     tax
+  }
+  .if (a==1) {  
     pla
+  }
 }
 
 .label SCREEN_RAM = $4000
