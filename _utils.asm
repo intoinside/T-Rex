@@ -91,6 +91,13 @@
     jsr Utils.CalculateScore
 }
 
+.macro CopyCalculatedPoints(Source, Dest) {
+  .for (var i = 0; i < 5; i++) {
+    lda Source + i
+    sta Dest + i
+  }
+}
+
 /* Generates a random number up to 254. */
 .macro GetRandomNumberFromMinimum(minNumber) {
     lda #minNumber

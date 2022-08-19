@@ -88,7 +88,15 @@ SetDinoDoped: {
     cpx #DopedTextSize
     bne !WriteTxt-
 
+    CalculatePoints(0, 4, 0)
+    CopyCalculatedPoints(
+      Utils.CalculateScore.CalculatedScore, 
+      HandleSpeedRunText.AlertScorePoints)
+
     CalculatePoints(0, 5, 0)
+    CopyCalculatedPoints(
+      Utils.CalculateScore.CalculatedScore, 
+      HandleSpeedRunText.EndDopedScorePoints)
 
     rts
 }
@@ -114,7 +122,7 @@ SetDinoUndoped: {
 
 * = * "Dino.HandleSpeedRunText"
 HandleSpeedRunText: {
-    ldy #13
+    ldy #DopedTextSize + 1
     ldx Offset
     lda Colours, x
   !Loop:
@@ -124,19 +132,39 @@ HandleSpeedRunText: {
 
     inc Offset
     lda Offset
+  FlashingQty:
     cmp #40
     bne !Done+
     lda #0
     sta Offset
 
   !Done:
-    jsr HasCalculatedScoreReached
-    beq !Exit+
+    jsr HasEndDopedScorePointsReached
+    beq !+
 
     jsr SetDinoUndoped
+    lda #40
+    sta FlashingQty + 1
+    lda #0
+    sta Offset
+
+    jmp !Exit+
+
+  !:
+    jsr HasAlertScorePointsReached
+    beq !Exit+
+
+// Alert zone, flash faster to notify user that doped status
+// is going to end soon
+    lda #15
+    sta FlashingQty + 1
+
 
   !Exit:
     rts
+
+  AlertScorePoints: .byte 0, 0, 0, 0, 0
+  EndDopedScorePoints: .byte 0, 0, 0, 0, 0
 
   Colours: .byte $09,$09,$02,$02,$08
            .byte $08,$0a,$0a,$0f,$0f
@@ -149,29 +177,66 @@ HandleSpeedRunText: {
   Offset: .byte 0
 }
 
-* = * "Dino.HasCalculatedScoreReached"
-HasCalculatedScoreReached: {
-    lda Utils.CalculateScore.CalculatedScore
+* = * "Dino.HasAlertScorePointsReached"
+HasAlertScorePointsReached: {
+    lda HandleSpeedRunText.AlertScorePoints
     cmp Utils.CurrentScore
     bcc !NotReached+
     bne !Reached+
 
-    lda Utils.CalculateScore.CalculatedScore + 1
+    lda HandleSpeedRunText.AlertScorePoints + 1
     cmp Utils.CurrentScore + 1
     bcc !NotReached+
     bne !Reached+
 
-    lda Utils.CalculateScore.CalculatedScore + 2
+    lda HandleSpeedRunText.AlertScorePoints + 2
     cmp Utils.CurrentScore + 2
     bcc !NotReached+
     bne !Reached+
 
-    lda Utils.CalculateScore.CalculatedScore + 3
+    lda HandleSpeedRunText.AlertScorePoints + 3
     cmp Utils.CurrentScore + 3
     bcc !NotReached+
     bne !Reached+
 
-    lda Utils.CalculateScore.CalculatedScore + 4
+    lda HandleSpeedRunText.AlertScorePoints + 4
+    cmp Utils.CurrentScore + 4
+    bcc !NotReached+
+
+  !Reached:
+    lda #0
+    jmp !Done+
+
+  !NotReached:
+    lda #1
+
+  !Done:
+    rts
+}
+
+* = * "Dino.HasEndDopedScorePointsReached"
+HasEndDopedScorePointsReached: {
+    lda HandleSpeedRunText.EndDopedScorePoints
+    cmp Utils.CurrentScore
+    bcc !NotReached+
+    bne !Reached+
+
+    lda HandleSpeedRunText.EndDopedScorePoints + 1
+    cmp Utils.CurrentScore + 1
+    bcc !NotReached+
+    bne !Reached+
+
+    lda HandleSpeedRunText.EndDopedScorePoints + 2
+    cmp Utils.CurrentScore + 2
+    bcc !NotReached+
+    bne !Reached+
+
+    lda HandleSpeedRunText.EndDopedScorePoints + 3
+    cmp Utils.CurrentScore + 3
+    bcc !NotReached+
+    bne !Reached+
+
+    lda HandleSpeedRunText.EndDopedScorePoints + 4
     cmp Utils.CurrentScore + 4
     bcc !NotReached+
 
