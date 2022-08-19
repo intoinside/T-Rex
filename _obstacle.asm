@@ -49,6 +49,8 @@ PrepareMushroom: {
     rts
 }
 
+.label ObstacleStartX = 150
+
 * = * "Obstacle.ShowObstacle"
 /* Show the obstacle */
 ShowObstacle: {
@@ -56,7 +58,7 @@ ShowObstacle: {
     ora #%00001000
     sta c64lib.SPRITE_ENABLE
 
-    lda #150
+    lda #ObstacleStartX
     sta c64lib.SPRITE_3_X
     lda c64lib.SPRITE_MSB_X
     ora #%00001000
@@ -76,7 +78,7 @@ ShowMushroom: {
     ora #%00100000
     sta c64lib.SPRITE_ENABLE
 
-    lda #180
+    lda #ObstacleStartX + 25
     sta c64lib.SPRITE_5_X
     lda c64lib.SPRITE_MSB_X
     ora #%00100000

@@ -165,7 +165,7 @@ EvaluateSpeedUp: {
     bne !SecondSpeedUp+
     lda MapSpeedForeground
     cmp #3
-    beq !Done+
+    bcs !Done+
     inc MapSpeedForeground
     jmp !Done+
 
@@ -175,7 +175,7 @@ EvaluateSpeedUp: {
     bcc !Done+
     lda MapSpeedForeground
     cmp #4
-    beq !Done+
+    bcs !Done+
     inc MapSpeedForeground
 
   !Done:

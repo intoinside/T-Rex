@@ -80,14 +80,12 @@ SetDinoDoped: {
     lda #RED
     sta c64lib.SPRITE_1_COLOR
 
-    inc MapSpeedForeground
-
     ldx #0
   !WriteTxt:
-    lda SpeedRunText, x
-    sta SpeedRunLabel, x
+    lda DopedText, x
+    sta DopedLabel, x
     inx
-    cpx #12
+    cpx #DopedTextSize
     bne !WriteTxt-
 
     CalculatePoints(0, 5, 0)
@@ -103,14 +101,12 @@ SetDinoUndoped: {
     lda #GREEN
     sta c64lib.SPRITE_1_COLOR
 
-    dec MapSpeedForeground
-
     ldx #0
     txa
   !WriteTxt:
-    sta SpeedRunLabel, x
+    sta DopedLabel, x
     inx
-    cpx #12
+    cpx #DopedTextSize
     bne !WriteTxt-
 
     rts
@@ -122,7 +118,7 @@ HandleSpeedRunText: {
     ldx Offset
     lda Colours, x
   !Loop:
-    sta SpeedRunColorsLabel - 1, y
+    sta DopedColorsLabel - 1, y
     dey
     bne !Loop-
 
@@ -293,9 +289,10 @@ IsDoped: .byte 0
 JumpMap:
 .fill TotalJumpFrame, round(PositionY - 45*sin(toRadians(360*i/((TotalJumpFrame - 1) * 2))))
 
-.label SpeedRunLabel = SCREEN_RAM + c64lib_getTextOffset(1, 0)
-.label SpeedRunColorsLabel = c64lib.COLOR_RAM + c64lib_getTextOffset(1, 0)
-SpeedRunText: .text "speed run!!!"
+.label DopedLabel = SCREEN_RAM + c64lib_getTextOffset(1, 0)
+.label DopedColorsLabel = c64lib.COLOR_RAM + c64lib_getTextOffset(1, 0)
+.label DopedTextSize = 13
+DopedText: .text "dino power!!!"
 
 .label PositionX = 55
 .label PositionY = 196
