@@ -43,6 +43,14 @@
     cli
 }
 
+.macro PlaySound(volume, sfxnumber, voice) {
+    lda #volume
+    sta $d418       // set volume
+    lda #sfxnumber  // sfx number
+    ldy #voice      // voice number
+    jsr $c04a       // play sound
+}
+
 Background_Init: {
     lda #0
     sta MapPositionLandscape + 1
@@ -75,6 +83,8 @@ Irq0: { // 0
     pushStatus(1, 1, 1)
 
     asl c64lib.IRR
+
+    jsr $c237   // Play sounds
 
     lda Dino.IsDoped
     beq !NoDoped+
