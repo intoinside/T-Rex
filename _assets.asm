@@ -100,6 +100,26 @@ SPRITES_OFFSET: {
 
   .label MUSHROOM = ROCK_2 + 1
 
+  .label CACTUS_EXP_1 = MUSHROOM + 1
+  .label CACTUS_EXP_2 = MUSHROOM + 2
+  .label CACTUS_EXP_3 = MUSHROOM + 3
+  .label CACTUS_EXP_4 = MUSHROOM + 4
+  .label CACTUS_EXP_5 = MUSHROOM + 5
+  .label CACTUS_EXP_6 = MUSHROOM + 6
+  .label CACTUS_EXP_7 = MUSHROOM + 7
+  .label CACTUS_EXP_8 = MUSHROOM + 8
+  .label CACTUS_EXP_9 = MUSHROOM + 9
+  .label CACTUS_EXP_A = MUSHROOM + 10
+
+  .label ROCK_EXP_1 = CACTUS_EXP_A + 1
+  .label ROCK_EXP_2 = CACTUS_EXP_A + 2
+  .label ROCK_EXP_3 = CACTUS_EXP_A + 3
+  .label ROCK_EXP_4 = CACTUS_EXP_A + 4
+  .label ROCK_EXP_5 = CACTUS_EXP_A + 5
+  .label ROCK_EXP_6 = CACTUS_EXP_A + 6
+  .label ROCK_EXP_7 = CACTUS_EXP_A + 7
+  .label ROCK_EXP_8 = CACTUS_EXP_A + 8
+
   .print "FIRST_SPRITE_PTR="+FIRST_SPRITE_PTR
   .print "PTERO_1="+PTERO_1
   .print "SUN_1="+SUN_1

@@ -71,10 +71,17 @@ Entry: {
   !GameInProgress:
     jsr Dino.CheckCollision
     bne !MushroomEatenCheck+
+
+// Dino hit an obstacle, check if it's doped or not    
     jsr Dino.HandleDopedStatus
-    bne !MushroomEatenCheck+
+    bne !HitObstacleWhileDoped+
+
+// Dino not doped, should die
     jsr SetGameEnded
     jmp !GameHandlingDone+
+
+  !HitObstacleWhileDoped:
+    jsr Obstacle.Explodes
 
   !MushroomEatenCheck:
     jsr Dino.CheckMushroomEaten
@@ -103,7 +110,7 @@ Entry: {
     bne !WaitOuter-
 
     IsReturnPressed()
-    beq !MainLoop-
+    beq !GameHandlingDone+
     jsr Dino.Jump
 
   !GameHandlingDone:

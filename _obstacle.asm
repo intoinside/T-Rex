@@ -198,6 +198,46 @@ MoveMushroom: {
     rts
 }
 
+* = * "Obstacle.Explodes"
+/* Handle the obstacle explosion */
+Explodes: {
+    ldx OBSTACLE_1_PTR
+    cpx #SPRITES_OFFSET.CACTUS_6 + 1
+    bcs !NoCactus+
+
+    ldx #SPRITES_OFFSET.CACTUS_EXP_1
+    jmp !SetShape+
+
+  !NoCactus:
+    cpx #SPRITES_OFFSET.ROCK_2 + 1
+    bcs !NoRock+
+
+    ldx #SPRITES_OFFSET.ROCK_EXP_1
+    jmp !SetShape+
+
+// No cactus and no rock, explosion already in progress
+  !NoRock:
+    inx
+    cpx #SPRITES_OFFSET.ROCK_EXP_1
+    beq !ExpDone+
+
+    cpx #SPRITES_OFFSET.ROCK_EXP_8 + 1
+    beq !ExpDone+
+
+    jmp !SetShape+
+    
+  !ExpDone:
+    lda c64lib.SPRITE_ENABLE
+    and #%11110111
+    sta c64lib.SPRITE_ENABLE
+    jmp !Done+
+
+  !SetShape:
+    stx OBSTACLE_1_PTR
+  !Done:
+    rts
+}
+
 .label PositionY = 198
 
 .label OBSTACLE_1_PTR = SCREEN_RAM + $3f8 + 3
