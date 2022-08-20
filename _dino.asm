@@ -326,15 +326,7 @@ CheckMushroomEaten: {
 * = * "Dino.HandleDopedStatus"
 HandleDopedStatus: {
     lda IsDoped
-    bne !Doped+
 
-    lda #0
-    jmp !Done+
-
-  !Doped:
-    lda #1
-
-  !Done:
     rts
 }
 
