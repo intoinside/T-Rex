@@ -5,15 +5,15 @@
 * = * "Dino.Init"
 Init: {
     lda #PositionX
-    sta c64lib.SPRITE_1_X
+    sta c64lib.SPRITE_6_X
     lda #PositionY
-    sta c64lib.SPRITE_1_Y
+    sta c64lib.SPRITE_6_Y
 
     lda #SPRITES_OFFSET.DINO_1
     sta DINO_PTR
 
     lda #GREEN
-    sta c64lib.SPRITE_1_COLOR
+    sta c64lib.SPRITE_6_COLOR
 
     lda #0
     sta IsJumping
@@ -21,7 +21,7 @@ Init: {
     sta HandleJump.CurrentXFrame
 
     lda c64lib.SPRITE_ENABLE
-    ora #%00000010
+    ora #%01000000
     sta c64lib.SPRITE_ENABLE
 
     rts
@@ -78,7 +78,7 @@ SetDinoDoped: {
     sta IsDoped
 
     lda #RED
-    sta c64lib.SPRITE_1_COLOR
+    sta c64lib.SPRITE_6_COLOR
 
     ldx #0
   !WriteTxt:
@@ -107,7 +107,7 @@ SetDinoUndoped: {
     sta IsDoped
 
     lda #GREEN
-    sta c64lib.SPRITE_1_COLOR
+    sta c64lib.SPRITE_6_COLOR
 
     ldx #0
     txa
@@ -289,7 +289,7 @@ HandleJump: {
     beq !ResetJump+
 
     lda JumpMap,x
-    sta c64lib.SPRITE_1_Y
+    sta c64lib.SPRITE_6_Y
     inc CurrentXFrame
     jmp !Done+
 
@@ -307,18 +307,18 @@ HandleJump: {
 
 * = * "Dino.CheckCollision"
 CheckCollision: {
-    lda #%00001010
+    lda #%01001000
     and Sprite2SpriteCollision
-    cmp #%00001010
+    cmp #%01001000
 
     rts
 }
 
 * = * "Dino.CheckMushroomEaten"
 CheckMushroomEaten: {
-    lda #%00100010
+    lda #%01100000
     and Sprite2SpriteCollision
-    cmp #%00100010
+    cmp #%01100000
 
     rts
 }
@@ -336,7 +336,7 @@ SetGameEnd: {
     sta DINO_PTR
 
     lda #GRAY
-    sta c64lib.SPRITE_1_COLOR
+    sta c64lib.SPRITE_6_COLOR
 
     rts
 }
@@ -356,6 +356,6 @@ DopedText: .text "dino power!!!"
 .label PositionX = 55
 .label PositionY = 196
 
-.label DINO_PTR = SCREEN_RAM + $3f8 + 1
+.label DINO_PTR = SCREEN_RAM + $3f8 + 6
 
 #import "./_label.asm"
