@@ -201,6 +201,11 @@ MoveMushroom: {
 * = * "Obstacle.Explodes"
 /* Handle the obstacle explosion */
 Explodes: {
+    lda Waiter
+    eor #$ff
+    sta Waiter
+    beq !Done+
+
     ldx OBSTACLE_1_PTR
     cpx #SPRITES_OFFSET.CACTUS_6 + 1
     bcs !NoCactus+
@@ -236,6 +241,8 @@ Explodes: {
     stx OBSTACLE_1_PTR
   !Done:
     rts
+
+  Waiter: .byte 0
 }
 
 .label PositionY = 198
