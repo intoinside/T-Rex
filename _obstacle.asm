@@ -212,6 +212,7 @@ Explodes: {
 
 // It's a cactus not exploded, give points and start explosion
     jsr AdjustScore
+    PlaySound(15, 1, 1)
     AddPoints(5, 0)
     ldx #SPRITES_OFFSET.CACTUS_EXP_1
     jmp !SetShape+
@@ -222,6 +223,7 @@ Explodes: {
 
 // It's a rock not exploded, give points and start explosion
     jsr AdjustScore
+    PlaySound(15, 1, 1)
     AddPoints(5, 0)
     ldx #SPRITES_OFFSET.ROCK_EXP_1
     jmp !SetShape+
