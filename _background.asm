@@ -479,6 +479,30 @@ DrawFixedForeground: {
     rts
 }
 
+WriteReadyText: {
+    ldx #0
+  !WriteTxt:
+    lda ReadyToStartText, x
+    sta ReadyToStartLabel, x
+    inx
+    cpx #ReadyToStartTextSize
+    bne !WriteTxt-
+
+    rts
+}
+
+CleanReadyText: {
+    ldx #0
+    lda #0
+  !WriteTxt:
+    sta ReadyToStartLabel, x
+    inx
+    cpx #ReadyToStartTextSize
+    bne !WriteTxt-
+
+    rts
+}
+
 .macro ManyNop(nopCount) {
     .for (var i = 0; i < nopCount; i++) {
       nop
@@ -532,5 +556,10 @@ MapSpeedLandscape: .byte 1
 MapSpeedForeground: .byte StartMapSpeedForeground
 
 FrameFlag: .byte $00
+
+.label ReadyToStartLabel = SCREEN_RAM + c64lib_getTextOffset(1, 0)
+.label ReadyToStartColorsLabel = c64lib.COLOR_RAM + c64lib_getTextOffset(1, 0)
+.label ReadyToStartTextSize = 15
+ReadyToStartText: .text "ready to start!"
 
 #import "./_label.asm"

@@ -53,6 +53,9 @@ Entry: {
   !CanStart:
     lda #0
     sta GameEnded
+    jsr WriteReadyText
+    IsSpacePressedAndReleased()
+    jsr CleanReadyText
 
   !MainLoop:
     lda c64lib.RASTER
@@ -63,8 +66,10 @@ Entry: {
     lda GameEnded
     beq !GameInProgress+
 
+    jsr WriteReadyText
     IsSpacePressed()
     beq !MainLoop-
+    jsr CleanReadyText
     jsr Utils.CompareAndUpdateHiScore
     jmp !StartGame-
 

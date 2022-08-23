@@ -256,7 +256,7 @@ Jump: {
     lda IsJumping
     bne !Done+
 
-    PlaySound(15, 0, 0)
+    PlaySound(12, 0, 0)
 
     inc IsJumping
 
