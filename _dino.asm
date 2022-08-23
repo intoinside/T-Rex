@@ -54,13 +54,13 @@ SwitchDinoFrame: {
 
   !Doped:
     lda DINO_PTR
-    cmp #SPRITES_OFFSET.DINO_FAST_1
+    cmp #SPRITES_OFFSET.DINO_DOPED_1
     beq !SwitchTo2+
-    lda #SPRITES_OFFSET.DINO_FAST_1
+    lda #SPRITES_OFFSET.DINO_DOPED_1
     jmp !Change+
 
   !SwitchTo2:
-    lda #SPRITES_OFFSET.DINO_FAST_2
+    lda #SPRITES_OFFSET.DINO_DOPED_2
 
   !Change:
     sta DINO_PTR
@@ -270,7 +270,7 @@ Jump: {
     jmp !Change+
 
   !Doped:
-    lda #SPRITES_OFFSET.DINO_FAST_JMP
+    lda #SPRITES_OFFSET.DINO_DOPED_JMP
 
   !Change:
     sta DINO_PTR
