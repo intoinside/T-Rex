@@ -210,6 +210,9 @@ Explodes: {
     cpx #SPRITES_OFFSET.CACTUS_6 + 1
     bcs !NoCactus+
 
+// It's a cactus not exploded, give points and start explosion
+    jsr AdjustScore
+    AddPoints(5, 0)
     ldx #SPRITES_OFFSET.CACTUS_EXP_1
     jmp !SetShape+
 
@@ -217,18 +220,22 @@ Explodes: {
     cpx #SPRITES_OFFSET.ROCK_2 + 1
     bcs !NoRock+
 
+// It's a rock not exploded, give points and start explosion
+    jsr AdjustScore
+    AddPoints(5, 0)
     ldx #SPRITES_OFFSET.ROCK_EXP_1
     jmp !SetShape+
 
 // No cactus and no rock, explosion already in progress
   !NoRock:
     inx
-    cpx #SPRITES_OFFSET.ROCK_EXP_1
+    cpx #SPRITES_OFFSET.CACTUS_EXP_A + 1
     beq !ExpDone+
 
     cpx #SPRITES_OFFSET.ROCK_EXP_8 + 1
     beq !ExpDone+
 
+// Explosion in progress, going to next frame
     jmp !SetShape+
     
   !ExpDone:
@@ -243,6 +250,28 @@ Explodes: {
     rts
 
   Waiter: .byte 0
+}
+
+* = * "Obstacle.AdjustScore"
+/* Adjust precalculated score */
+AdjustScore: {
+    CopyCalculatedPoints(
+      Dino.HandleSpeedRunText.AlertScorePoints,
+      Utils.AddPointsToCalculated.BasePoints)
+    AddPointsToCalculated(0, 5, 0)
+    CopyCalculatedPoints(
+      Utils.AddPointsToCalculated.BasePoints, 
+      Dino.HandleSpeedRunText.AlertScorePoints)
+
+    CopyCalculatedPoints(
+      Dino.HandleSpeedRunText.EndDopedScorePoints,
+      Utils.AddPointsToCalculated.BasePoints)
+    AddPointsToCalculated(0, 5, 0)
+    CopyCalculatedPoints(
+      Utils.AddPointsToCalculated.BasePoints, 
+      Dino.HandleSpeedRunText.EndDopedScorePoints)
+
+    rts
 }
 
 .label PositionY = 198

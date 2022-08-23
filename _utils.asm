@@ -80,6 +80,17 @@
     jsr Utils.AddScore
 }
 
+.macro AddPointsToCalculated(digit3, digit2, digit1) {
+    lda #digit1
+    sta Utils.AddPointsToCalculated.Points + 4
+    lda #digit2
+    sta Utils.AddPointsToCalculated.Points + 3
+    lda #digit3
+    sta Utils.AddPointsToCalculated.Points + 2
+
+    jsr Utils.AddPointsToCalculated
+}
+
 .macro CalculatePoints(digit3, digit2, digit1) {
     lda #digit1
     sta Utils.CalculateScore.Points + 4
@@ -139,7 +150,30 @@ AddScore: {
     jsr EvaluateSpeedUp
     jmp DrawScore   // jsr + rts
 
-  Points: .byte $00, $00, $00, $00, $00
+  Points: .byte 0, 0, 0, 0, 0
+}
+
+* = * "Utils.AddPointsToCalculated"
+AddPointsToCalculated: {
+    ldx #5
+    clc
+  !Loop:
+    lda BasePoints - 1, x
+    adc Points - 1, x
+    cmp #10
+    bcc !SaveDigit+
+    sbc #10
+    sec
+
+  !SaveDigit:
+    sta BasePoints - 1, x
+    dex
+    bne !Loop-
+
+    rts
+
+  Points: .byte 0, 0, 0, 0, 0
+  BasePoints: .byte 0, 0, 0, 0, 0
 }
 
 * = * "Utils.CalculateScore"
