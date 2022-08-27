@@ -84,8 +84,6 @@ Irq0: { // 0
 
     asl c64lib.IRR
 
-    jsr $c237   // Play sounds
-
     lda Dino.IsDoped
     beq !NoDoped+
 
@@ -317,6 +315,8 @@ RasterLowerForegroundStart: {
     lda MapPositionLowerForeground + 0
     ora #%00010000
     sta c64lib.CONTROL_2
+
+    jsr $c237   // Play sounds
 
     lda #<Irq0
     sta $fffe
