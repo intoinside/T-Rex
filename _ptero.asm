@@ -4,9 +4,6 @@
 
 * = * "Ptero.Init"
 Init: {
-    lda #PositionY
-    sta c64lib.SPRITE_2_Y
-
     lda #SPRITES_OFFSET.PTERO_1
     sta PTERO_PTR
 
@@ -22,6 +19,9 @@ ShowIt: {
     lda c64lib.SPRITE_ENABLE
     ora #%00000100
     sta c64lib.SPRITE_ENABLE
+
+    GetRandomNumberInRange(60, 180)
+    sta c64lib.SPRITE_2_Y
 
     lda #155
     sta c64lib.SPRITE_2_X
@@ -120,8 +120,6 @@ HasToSwitch: {
   Waiter: .byte WaitCount
   AnimationForwarding: .byte 0
 }
-
-.label PositionY = 100
 
 .label PTERO_PTR = SCREEN_RAM + $3f8 + 2
 
