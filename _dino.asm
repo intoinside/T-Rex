@@ -307,10 +307,18 @@ HandleJump: {
 
 * = * "Dino.CheckCollision"
 CheckCollision: {
+// Check collision with obstacle1
     lda #%01001000
     and Sprite2SpriteCollision
     cmp #%01001000
+    beq !Done+
 
+// Check collision with ptero
+    lda #%01000100
+    and Sprite2SpriteCollision
+    cmp #%01000100
+
+  !Done:
     rts
 }
 
