@@ -198,9 +198,30 @@ MoveMushroom: {
     rts
 }
 
+* = * "Obstacle.Collided"
+Collided: {
+    lda #%01001000
+    and Dino.Sprite2SpriteCollision
+    cmp #%01001000
+    beq !Collided+
+
+    lda #0
+    jmp !Done+
+
+  !Collided:
+    lda #1
+
+  !Done:    
+    sta IsExploding
+    rts
+}
+
 * = * "Obstacle.Explodes"
 /* Handle the obstacle explosion */
 Explodes: {
+    lda IsExploding
+    beq !Done+
+
     lda Waiter
     eor #$ff
     sta Waiter
@@ -211,7 +232,7 @@ Explodes: {
     bcs !NoCactus+
 
 // It's a cactus not exploded, give points and start explosion
-    jsr AdjustScore
+    jsr Utils.AdjustScore
     PlaySound(12, 1, 1)
     AddPoints(5, 0)
     ldx #SPRITES_OFFSET.CACTUS_EXP_1
@@ -222,7 +243,7 @@ Explodes: {
     bcs !NoRock+
 
 // It's a rock not exploded, give points and start explosion
-    jsr AdjustScore
+    jsr Utils.AdjustScore
     PlaySound(12, 1, 1)
     AddPoints(5, 0)
     ldx #SPRITES_OFFSET.ROCK_EXP_1
@@ -244,6 +265,7 @@ Explodes: {
     lda c64lib.SPRITE_ENABLE
     and #%11110111
     sta c64lib.SPRITE_ENABLE
+    dec IsExploding
     jmp !Done+
 
   !SetShape:
@@ -254,27 +276,7 @@ Explodes: {
   Waiter: .byte 0
 }
 
-* = * "Obstacle.AdjustScore"
-/* Adjust precalculated score */
-AdjustScore: {
-    CopyCalculatedPoints(
-      Dino.HandleSpeedRunText.AlertScorePoints,
-      Utils.AddPointsToCalculated.BasePoints)
-    AddPointsToCalculated(0, 5, 0)
-    CopyCalculatedPoints(
-      Utils.AddPointsToCalculated.BasePoints, 
-      Dino.HandleSpeedRunText.AlertScorePoints)
-
-    CopyCalculatedPoints(
-      Dino.HandleSpeedRunText.EndDopedScorePoints,
-      Utils.AddPointsToCalculated.BasePoints)
-    AddPointsToCalculated(0, 5, 0)
-    CopyCalculatedPoints(
-      Utils.AddPointsToCalculated.BasePoints, 
-      Dino.HandleSpeedRunText.EndDopedScorePoints)
-
-    rts
-}
+IsExploding: .byte 0
 
 .label PositionY = 198
 

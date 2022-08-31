@@ -308,16 +308,14 @@ HandleJump: {
 * = * "Dino.CheckCollision"
 CheckCollision: {
 // Check collision with obstacle1
-    lda #%01001000
-    and Sprite2SpriteCollision
-    cmp #%01001000
-    beq !Done+
+    jsr Obstacle.Collided
 
 // Check collision with ptero
-    lda #%01000100
-    and Sprite2SpriteCollision
-    cmp #%01000100
+    jsr Ptero.Collided
 
+    lda Obstacle.IsExploding
+    ora Ptero.IsExploding
+    
   !Done:
     rts
 }
@@ -351,6 +349,9 @@ SetGameEnd: {
 
 IsJumping: .byte 0
 IsDoped: .byte 0
+
+Sprite2BackCollision: .byte 0
+Sprite2SpriteCollision: .byte 0
 
 .label TotalJumpFrame = 38
 JumpMap:

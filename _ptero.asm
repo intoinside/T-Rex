@@ -4,9 +4,6 @@
 
 * = * "Ptero.Init"
 Init: {
-    lda #SPRITES_OFFSET.PTERO_1
-    sta PTERO_PTR
-
     lda #ORANGE
     sta c64lib.SPRITE_2_COLOR
 
@@ -20,7 +17,11 @@ ShowIt: {
     ora #%00000100
     sta c64lib.SPRITE_ENABLE
 
+    lda #SPRITES_OFFSET.PTERO_1
+    sta PTERO_PTR
+
     GetRandomNumberInRange(60, 180)
+    lda #190
     sta c64lib.SPRITE_2_Y
 
     lda #155
@@ -51,14 +52,17 @@ MoveIt: {
 
 // Ptero already shown, move it
   !MovePtero:
+    lda MapSpeedForeground
+    sta MapSpeedForegroundDummy
+    inc MapSpeedForegroundDummy
     ldx MapSpeedLandscape
   !Loop:
     lda c64lib.SPRITE_2_X
     sec
-    sbc #3  // TIP: keep attention on SPRITE_2_X value in ShowIt
+    sbc MapSpeedForegroundDummy
     sta c64lib.SPRITE_2_X
-    cmp #255
-    bne !NextIt+
+
+    bcs !NextIt+
     lda c64lib.SPRITE_MSB_X
     and #%11111011
     sta c64lib.SPRITE_MSB_X
@@ -70,7 +74,7 @@ MoveIt: {
     jsr HasToSwitch
 
     lda c64lib.SPRITE_2_X
-    cmp #10
+    cmp #20
     bcs !Done+
     lda c64lib.SPRITE_MSB_X
     and #%00000100
@@ -80,8 +84,13 @@ MoveIt: {
     and #%11111011
     sta c64lib.SPRITE_ENABLE
 
+    lda #0
+    sta IsExploding
+
   !Done:
     rts
+
+  MapSpeedForegroundDummy: .byte 0
 }
 
 * = * "Ptero.HasToSwitch"
@@ -91,6 +100,10 @@ HasToSwitch: {
     bne !Done+
     lda #WaitCount
     sta Waiter
+    
+    lda PTERO_PTR
+    cmp #SPRITES_OFFSET.PTERO_FALLING
+    beq !Done+
 
   !Switch:
     lda AnimationForwarding
@@ -120,6 +133,59 @@ HasToSwitch: {
   Waiter: .byte WaitCount
   AnimationForwarding: .byte 0
 }
+
+* = * "Ptero.Collided"
+Collided: {
+    lda #%01000100
+    and Dino.Sprite2SpriteCollision
+    cmp #%01000100
+    beq !Collided+
+
+    lda #0
+    jmp !Done+
+
+  !Collided:
+    lda #1
+
+  !Done:    
+    sta IsExploding
+    rts
+}
+
+* = * "Ptero.Explodes"
+/* Handle the ptero explosion */
+Explodes: {
+    lda IsExploding
+    beq !Done+
+
+    // dec Waiter
+    // bne !Done+
+    // lda #WaitCount
+    // sta Waiter
+
+    lda PTERO_PTR
+    cmp #SPRITES_OFFSET.PTERO_FALLING
+    bne !SetFalling+
+
+    inc c64lib.SPRITE_2_Y
+    jmp !Done+
+
+  !SetFalling:
+    jsr Utils.AdjustScore
+    PlaySound(12, 1, 1)
+    AddPoints(5, 0)
+
+    lda #SPRITES_OFFSET.PTERO_FALLING
+    sta PTERO_PTR
+
+  !Done:
+    rts
+
+  .label WaitCount = 2
+  Waiter: .byte WaitCount
+}
+
+IsExploding: .byte 0
 
 .label PTERO_PTR = SCREEN_RAM + $3f8 + 2
 

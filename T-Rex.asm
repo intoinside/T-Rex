@@ -75,9 +75,9 @@ Entry: {
 
   !GameInProgress:
     jsr Dino.CheckCollision
-    bne !MushroomEatenCheck+
+    beq !MushroomEatenCheck+
 
-// Dino hit an obstacle, check if it's doped or not    
+// Dino hit had a collision, check if it's doped or not    
     jsr Dino.HandleDopedStatus
     bne !HitObstacleWhileDoped+
 
@@ -86,6 +86,7 @@ Entry: {
     jmp !GameHandlingDone+
 
   !HitObstacleWhileDoped:
+    jsr Ptero.Explodes
     jsr Obstacle.Explodes
 
   !MushroomEatenCheck:
@@ -136,14 +137,11 @@ SetGameEnded: {
 
 .macro GrabCollisionStatus() {
     lda c64lib.SPRITE_2S_COLLISION  
-    sta Sprite2SpriteCollision
+    sta Dino.Sprite2SpriteCollision
     lda c64lib.SPRITE_2B_COLLISION  
-    sta Sprite2BackCollision
+    sta Dino.Sprite2BackCollision
 }
 
 GameEnded: .byte 0
-
-Sprite2BackCollision: .byte 0
-Sprite2SpriteCollision: .byte 0
 
 #import "./_label.asm"

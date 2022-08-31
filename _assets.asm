@@ -77,7 +77,6 @@ SPRITES_OFFSET: {
   .label DINO_2 = FIRST_SPRITE_PTR + 1
   .label DINO_JMP = FIRST_SPRITE_PTR + 2
   .label DINO_DOPED_1 = FIRST_SPRITE_PTR + 3
-.print "FIRST_SPRITE_PTR="+FIRST_SPRITE_PTR
   .label DINO_DOPED_2 = FIRST_SPRITE_PTR + 4
   .label DINO_DOPED_JMP = FIRST_SPRITE_PTR + 5
   .label DINO_DEAD = FIRST_SPRITE_PTR + 6
@@ -86,9 +85,10 @@ SPRITES_OFFSET: {
   .label PTERO_2 = DINO_DEAD + 2
   .label PTERO_3 = DINO_DEAD + 3
   .label PTERO_4 = DINO_DEAD + 4
+  .label PTERO_FALLING = DINO_DEAD + 5
 
-  .label SUN_1 = PTERO_4 + 1
-  .label SUN_2 = PTERO_4 + 2
+  .label SUN_1 = PTERO_FALLING + 1
+  .label SUN_2 = PTERO_FALLING + 2
 
   .label CACTUS_1 = SUN_2 + 1
   .label CACTUS_2 = SUN_2 + 2
