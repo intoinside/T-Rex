@@ -199,6 +199,28 @@ CalculateScore: {
   CalculatedScore: .byte 0, 0, 0, 0, 0
 }
 
+* = * "Utils.AdjustScore"
+/* Adjust precalculated score */
+AdjustScore: {
+    CopyCalculatedPoints(
+      Dino.HandleSpeedRunText.AlertScorePoints,
+      Utils.AddPointsToCalculated.BasePoints)
+    AddPointsToCalculated(0, 5, 0)
+    CopyCalculatedPoints(
+      Utils.AddPointsToCalculated.BasePoints, 
+      Dino.HandleSpeedRunText.AlertScorePoints)
+
+    CopyCalculatedPoints(
+      Dino.HandleSpeedRunText.EndDopedScorePoints,
+      Utils.AddPointsToCalculated.BasePoints)
+    AddPointsToCalculated(0, 5, 0)
+    CopyCalculatedPoints(
+      Utils.AddPointsToCalculated.BasePoints, 
+      Dino.HandleSpeedRunText.EndDopedScorePoints)
+
+    rts
+}
+
 * = * "Utils.EvaluateSpeedUp"
 EvaluateSpeedUp: {
     lda CurrentScore + 2  // 100 pts
