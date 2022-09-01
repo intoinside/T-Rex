@@ -84,16 +84,16 @@ Irq0: { // 0
 
     asl c64lib.IRR
 
+    lda #LIGHT_GRAY
+    sta c64lib.BORDER_COL
+    sta c64lib.BG_COL_0
+
     lda Dino.IsDoped
     beq !NoDoped+
 
     jsr Dino.HandleSpeedRunText
 
   !NoDoped:
-    lda #LIGHT_GRAY
-    sta c64lib.BORDER_COL
-    sta c64lib.BG_COL_0
-
     lda #<Irq1
     sta $fffe
     lda #>Irq1
@@ -117,7 +117,7 @@ Irq1: { // 52
 
     asl c64lib.IRR
 
-    ManyNop(16)
+    ManyNop(18)
 
     lda #CYAN
     sta c64lib.BORDER_COL
@@ -140,7 +140,7 @@ Irq2: { // 54
 
     asl c64lib.IRR
 
-    ManyNop(18)
+    ManyNop(19)
 
     lda #LIGHT_GRAY
     sta c64lib.BORDER_COL
@@ -234,7 +234,7 @@ RasterLandscapeStart: { // 66
 
 #if DEBUG
     lda #YELLOW
-    sta $d020
+    sta c64lib.BORDER_COL
 #endif
 
     // Landscape
@@ -262,21 +262,11 @@ RasterForegroundStart: {  // 144
     pushStatus(1, 0, 0)
 
 #if DEBUG
-    lda #LIGHT_RED
-    sta $d020
+    lda #BLUE
+    sta c64lib.BORDER_COL
 #endif
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ManyNop(11)
 
     lda #%00010000
     sta c64lib.CONTROL_2
@@ -285,7 +275,7 @@ RasterForegroundStart: {  // 144
     sta $fffe
     lda #>RasterLowerForegroundStart
     sta $ffff
-    lda #200
+    lda #217
     sta c64lib.RASTER
 
     asl c64lib.IRR
@@ -300,21 +290,19 @@ RasterForegroundStart: {  // 144
 RasterLowerForegroundStart: {
     pushStatus(1, 0, 0)
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-
     lda MapPositionLowerForeground + 0
     ora #%00010000
     sta c64lib.CONTROL_2
+
+    ManyNop(15)
+
+    lda #DARK_GRAY
+    sta c64lib.BORDER_COL
+
+    ManyNop(18)
+
+    lda #RED
+    sta c64lib.BORDER_COL
 
     jsr $c237   // Play sounds
 
@@ -487,6 +475,14 @@ WriteReadyText: {
     inx
     cpx #ReadyToStartTextSize
     bne !WriteTxt-
+
+    ldx #0
+    lda #0
+  !SetColorTxt:
+    sta c64lib.COLOR_RAM, x
+    inx
+    cpx #ReadyToStartTextSize
+    bne !SetColorTxt-
 
     rts
 }
