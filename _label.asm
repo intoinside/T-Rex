@@ -1,6 +1,6 @@
 #importonce
 
-#define DEBUG
+// #define DEBUG
 
 #import "./_background.asm"
 #import "./_sprites.asm"
