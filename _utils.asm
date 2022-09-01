@@ -324,6 +324,14 @@ DrawScore: {
     rts
 }
 
+* = * "Utils.InitRandom"
+InitRandom: {
+    lda c64lib.RASTER
+    sta GetRandom.x1 + 1
+
+    rts
+}
+
 * = * "Utils.GetRandom"
 GetRandom: {
   !Loop:

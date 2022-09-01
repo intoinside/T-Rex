@@ -20,8 +20,7 @@ ShowIt: {
     lda #SPRITES_OFFSET.PTERO_1
     sta PTERO_PTR
 
-    GetRandomNumberInRange(60, 180)
-    lda #190
+    GetRandomNumberInRange(80, 175)
     sta c64lib.SPRITE_2_Y
 
     lda #155
@@ -42,7 +41,7 @@ MoveIt: {
 
 // Ptero is hidden, check if should be created
     GetRandomNumberFromMinimum(1)
-    cmp #254
+    cmp #252
     bcs CreatePtero
     jmp !Done+
 

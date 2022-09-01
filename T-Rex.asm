@@ -54,7 +54,13 @@ Entry: {
     lda #0
     sta GameEnded
     jsr WriteReadyText
-    IsSpacePressedAndReleased()
+
+  !:
+    lda c64lib.RASTER
+    bne !-
+    IsSpacePressed()
+    beq !-
+    jsr Utils.InitRandom
     jsr CleanReadyText
 
   !MainLoop:
