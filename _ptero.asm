@@ -171,7 +171,7 @@ Explodes: {
 
   !SetFalling:
     jsr Utils.AdjustScore
-    PlaySound(12, 1, 1)
+    PlaySound(12, 2, 1)
     AddPoints(5, 0)
 
     lda #SPRITES_OFFSET.PTERO_FALLING
